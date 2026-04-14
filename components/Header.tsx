@@ -1,11 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-
-const SCENES = [1, 2, 3, 4, 5] as const;
+import { SCENE_IDS, useScene } from "@/components/SceneContext";
 
 export function Header() {
-  const [selectedScene, setSelectedScene] = useState<(typeof SCENES)[number]>(1);
+  const { scene: selectedScene, setScene: setSelectedScene } = useScene();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuWrapRef = useRef<HTMLDivElement>(null);
 
@@ -49,10 +48,10 @@ export function Header() {
           <div
             id="scene-menu"
             role="listbox"
-            aria-label="Scenes"
+            aria-label="scenes"
             className="absolute left-0 right-0 top-full z-20 mt-2 overflow-hidden rounded-lg border border-white/20 bg-black/90 shadow-lg backdrop-blur-sm"
           >
-            {SCENES.map((n) => (
+            {SCENE_IDS.map((n) => (
               <button
                 key={n}
                 type="button"
@@ -66,25 +65,25 @@ export function Header() {
                   setMenuOpen(false);
                 }}
               >
-                Scene {n}
+                scene {n}
               </button>
             ))}
           </div>
         ) : null}
       </div>
 
-      {/* Desktop: inline scenes */}
-      <div className="hidden flex-wrap items-center justify-center gap-x-6 gap-y-2 font-nav font-light lowercase md:flex">
-        {SCENES.map((n) => (
+      {/* Desktop: one column per scene so spacing tracks viewport width */}
+      <div className="hidden w-full grid-cols-5 place-items-center gap-y-2 font-nav font-light lowercase md:grid">
+        {SCENE_IDS.map((n) => (
           <button
             key={n}
             type="button"
-            className={`transition-opacity hover:opacity-100 ${
+            className={`whitespace-nowrap transition-opacity hover:opacity-100 ${
               selectedScene === n ? "opacity-100 underline decoration-white/50 underline-offset-4" : "opacity-70"
             }`}
             onClick={() => setSelectedScene(n)}
           >
-            Scene {n}
+            scene {n}
           </button>
         ))}
       </div>

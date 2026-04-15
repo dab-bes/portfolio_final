@@ -2,11 +2,23 @@
 
 import { useScene, type SceneId, SCENE_LABELS } from "@/components/SceneContext";
 
-/** Three columns for scene 2 (left to right on md+). */
-const SCENE_2_TEXT_BOXES = [
-  "Left — featured project, hero case study, or primary work sample.",
-  "Center — secondary project, process notes, or metrics you want to highlight.",
-  "Right — gallery strip, stack of links, or a short list of experiments.",
+/** Three columns × three projects (swipe / scroll for the next). */
+const SCENE_2_PROJECT_COLUMNS: readonly (readonly string[])[] = [
+  [
+    "Left — featured project, hero case study, or primary work sample.",
+    "Left — second project (e.g. case study detail or role).",
+    "Left — third project (e.g. outcomes or media).",
+  ],
+  [
+    "Center — secondary project, process notes, or metrics you want to highlight.",
+    "Center — second project (e.g. process or stack).",
+    "Center — third project (e.g. KPIs or screenshots).",
+  ],
+  [
+    "Right — gallery strip, stack of links, or a short list of experiments.",
+    "Right — second project (e.g. experiment or side build).",
+    "Right — third project (e.g. tools or prototypes).",
+  ],
 ] as const;
 
 const SCENE_CONTENT: Record<
@@ -60,14 +72,52 @@ function Scene1Portrait() {
   );
 }
 
-function Scene2CardImagePlaceholder({ index }: { index: number }) {
+function Scene2ProjectImagePlaceholder({
+  columnIndex,
+  projectIndex,
+}: {
+  columnIndex: number;
+  projectIndex: number;
+}) {
   return (
     <div
       role="img"
-      aria-label={`Image placeholder ${index + 1}`}
+      aria-label={`Column ${columnIndex + 1}, project ${projectIndex + 1} image placeholder`}
       className="flex aspect-[4/3] w-full shrink-0 items-center justify-center rounded-md border border-dashed border-white/35 bg-white/5 font-nav text-xs font-light lowercase tracking-wide text-white/50"
     >
       image
+    </div>
+  );
+}
+
+function Scene2ProjectColumn({
+  columnIndex,
+  descriptions,
+}: {
+  columnIndex: number;
+  descriptions: readonly string[];
+}) {
+  return (
+    <div
+      className="@container flex min-h-0 min-w-0 flex-1 flex-col rounded-lg border border-white/15 bg-black/25 p-4 shadow-sm backdrop-blur-sm md:p-5 [--project-slide-h:calc(75cqw+7rem)]"
+      aria-label={`Portfolio column ${columnIndex + 1}, ${descriptions.length} projects — scroll or swipe up for more`}
+    >
+      <div className="flex h-[var(--project-slide-h)] min-h-0 shrink-0 touch-pan-y snap-y snap-mandatory flex-col overflow-y-auto overscroll-y-contain [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {descriptions.map((description, projectIndex) => (
+          <div
+            key={projectIndex}
+            className="flex h-[var(--project-slide-h)] shrink-0 snap-start snap-always flex-col overflow-hidden"
+          >
+            <Scene2ProjectImagePlaceholder
+              columnIndex={columnIndex}
+              projectIndex={projectIndex}
+            />
+            <p className="pt-4 font-nav text-sm font-light leading-relaxed text-white/90 md:text-base [overflow-wrap:anywhere]">
+              {description}
+            </p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -185,17 +235,13 @@ export function SceneStage() {
             <h1 className="font-brand text-3xl font-thin normal-case tracking-wide md:text-4xl">
               {heading}
             </h1>
-            <div className="mt-6 flex min-h-0 flex-1 flex-col gap-4 md:flex-row md:items-stretch md:gap-5">
-              {SCENE_2_TEXT_BOXES.map((text, i) => (
-                <div
-                  key={i}
-                  className="flex min-h-0 min-w-0 flex-1 flex-col rounded-lg border border-white/15 bg-black/25 p-4 shadow-sm backdrop-blur-sm md:p-5"
-                >
-                  <Scene2CardImagePlaceholder index={i} />
-                  <p className="mt-auto pt-4 font-nav text-sm font-light leading-relaxed text-white/90 md:text-base">
-                    {text}
-                  </p>
-                </div>
+            <div className="mt-6 flex min-h-0 flex-1 flex-col gap-4 md:flex-row md:items-start md:gap-5">
+              {SCENE_2_PROJECT_COLUMNS.map((descriptions, columnIndex) => (
+                <Scene2ProjectColumn
+                  key={columnIndex}
+                  columnIndex={columnIndex}
+                  descriptions={descriptions}
+                />
               ))}
             </div>
           </>

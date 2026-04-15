@@ -21,6 +21,16 @@
   }
 }
 
+/* Hide document scrollbar; scrolling still works (wheel, trackpad, keyboard). */
+html {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar {
+  display: none;
+}
+
 /* Page photo: use Tailwind on <body> in layout.tsx (raw body background rules here get merged away by Tailwind v4). */
 body {
   color: var(--foreground);

@@ -1,8 +1,27 @@
 import * as THREE from "three";
 
-/** Projected globe diameter as a fraction of the square viewport (camera z=4.5, fov=75°, sphere r=1.5). For CSS backing disk. */
+const GLOBE_RADIUS = 1.5;
+const GLOBE_FOV = 75;
+/**
+ * Baseline camera distance before matching CSS. The blue disk was `silhouette * 1.14`; we pull
+ * the camera in by that factor so the rendered sphere fills that same disk.
+ */
+const GLOBE_CAMERA_Z_BASE = 3.55;
+const GLOBE_BLUE_DISK_MATCH = 1.14;
+/** Camera z used only for CSS disk sizing (matches historical framing). */
+const GLOBE_CAMERA_Z_FOR_CSS =
+  GLOBE_CAMERA_Z_BASE / GLOBE_BLUE_DISK_MATCH;
+/**
+ * >1 moves the Three.js camera farther than the CSS baseline so the textured globe renders
+ * slightly smaller than the blue backing while disk sizes stay the same.
+ */
+const GLOBE_RENDER_PULL_BACK = 1.065;
+const GLOBE_CAMERA_Z = GLOBE_CAMERA_Z_FOR_CSS * GLOBE_RENDER_PULL_BACK;
+
+/** Projected globe diameter as a fraction of the square viewport (for CSS backing / veil disks). */
 export const GLOBE_SILHOUETTE_SIZE_FRAC =
-  (2 * 1.5) / (2 * 4.5 * Math.tan(((75 / 180) * Math.PI) / 2));
+  (2 * GLOBE_RADIUS) /
+  (2 * GLOBE_CAMERA_Z_FOR_CSS * Math.tan(((GLOBE_FOV / 180) * Math.PI) / 2));
 
 export type CreateGlobeOptions = {
   textureUrl?: string;
@@ -70,7 +89,7 @@ export function createGlobe(
   backLight.position.set(-2, -1, -1);
   scene.add(backLight);
 
-  camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+  camera = new THREE.PerspectiveCamera(GLOBE_FOV, 1, 0.1, 1000);
   renderer = new THREE.WebGLRenderer({
     canvas,
     alpha: true,
@@ -83,7 +102,7 @@ export function createGlobe(
   const textureLoader = new THREE.TextureLoader();
   const globeTexture = textureLoader.load(textureUrl);
 
-  const globeGeometry = new THREE.SphereGeometry(1.5, 64, 32);
+  const globeGeometry = new THREE.SphereGeometry(GLOBE_RADIUS, 64, 32);
   const globeMaterial = new THREE.MeshPhongMaterial({
     map: globeTexture,
     transparent: false,
@@ -101,7 +120,7 @@ export function createGlobe(
   nycPin.position.set(pinPosition[0], pinPosition[1], pinPosition[2]);
   globe.add(nycPin);
 
-  const borderGeometry = new THREE.SphereGeometry(1.515, 64, 32);
+  const borderGeometry = new THREE.SphereGeometry(GLOBE_RADIUS * 1.01, 64, 32);
   const borderMaterial = new THREE.ShaderMaterial({
     uniforms: {
       map: { value: globeTexture },
@@ -147,7 +166,7 @@ export function createGlobe(
 
   globe.add(new THREE.Mesh(borderGeometry, borderMaterial));
 
-  const circleGeometry = new THREE.SphereGeometry(1.575, 32, 16);
+  const circleGeometry = new THREE.SphereGeometry(GLOBE_RADIUS * 1.06, 32, 16);
   const circleMaterial = new THREE.MeshBasicMaterial({
     color: 0xffffff,
     wireframe: false,
@@ -157,7 +176,7 @@ export function createGlobe(
   scene.add(new THREE.Mesh(circleGeometry, circleMaterial));
 
   const verticalCirclePoints: THREE.Vector3[] = [];
-  const verticalRadius = 1.11;
+  const verticalRadius = GLOBE_RADIUS * 0.78;
   const segments = 64;
   for (let i = 0; i <= segments; i++) {
     const angle = (i / segments) * Math.PI * 2;
@@ -185,7 +204,7 @@ export function createGlobe(
   verticalCircleLine.rotation.x = Math.PI / 2;
   scene.add(verticalCircleLine);
 
-  camera.position.z = 4.5;
+  camera.position.z = GLOBE_CAMERA_Z;
 
   function animate() {
     if (!globe || !renderer || !scene || !camera) return;

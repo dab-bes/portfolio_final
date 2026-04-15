@@ -33,9 +33,9 @@ function magnetTowardFace(r: number, step: number): number {
   const target = Math.round(r / step) * step;
   const err = target - r;
   const a = Math.abs(err);
-  if (a < 0.032) return target;
-  const t = a / 82;
-  const pull = 0.028 + 0.16 / (1 + t * t);
+  if (a < 0.02) return target;
+  const t = a / 56;
+  const pull = 0.012 + 0.075 / (1 + t * t);
   return r + err * pull;
 }
 

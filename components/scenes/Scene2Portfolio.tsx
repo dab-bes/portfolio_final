@@ -1,13 +1,35 @@
 "use client";
 
+import Image from "next/image";
 import {
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
   type CSSProperties,
   type PointerEvent as ReactPointerEvent,
 } from "react";
+
+type ProjectImageSource = string | readonly string[];
+
+const LEFT_COLUMN_THIRD_CYCLING_IMAGES = [
+  "/project1/loadingscreen.png",
+  "/project1/registry.png",
+  "/project1/open.png",
+] as const;
+
+/** Optional screenshot per cell; aligns with `SCENE_2_PROJECT_COLUMNS`. */
+const SCENE_2_PROJECT_IMAGES: readonly (readonly (ProjectImageSource | undefined)[])[] =
+  [
+    [
+      "/project1/homepage.png",
+      "/project1/schedule.png",
+      LEFT_COLUMN_THIRD_CYCLING_IMAGES,
+    ],
+    [undefined, undefined, undefined],
+    [undefined, undefined, undefined],
+  ] as const;
 
 /** Three columns × three projects (drag vertically — 3D wheel). */
 const SCENE_2_PROJECT_COLUMNS: readonly (readonly string[])[] = [
@@ -39,20 +61,67 @@ function magnetTowardFace(r: number, step: number): number {
   return r + err * pull;
 }
 
-function Scene2ProjectImagePlaceholder({
+function Scene2ProjectImageSlot({
   columnIndex,
   projectIndex,
+  src,
 }: {
   columnIndex: number;
   projectIndex: number;
+  src?: ProjectImageSource;
 }) {
+  const paths = useMemo(() => {
+    if (src === undefined) return [];
+    if (typeof src === "string") return [src];
+    return [...src];
+  }, [src]);
+
+  const [cycleIndex, setCycleIndex] = useState(0);
+
+  useEffect(() => {
+    if (paths.length <= 1) return;
+    const id = window.setInterval(() => {
+      setCycleIndex((i) => (i + 1) % paths.length);
+    }, 4500);
+    return () => window.clearInterval(id);
+  }, [paths]);
+
+  if (paths.length > 0) {
+    const activeSrc = paths[cycleIndex % paths.length]!;
+    const alt =
+      paths.length > 1
+        ? `Column ${columnIndex + 1}, project ${projectIndex + 1} — image ${cycleIndex + 1} of ${paths.length}`
+        : `Column ${columnIndex + 1}, project ${projectIndex + 1}`;
+    return (
+      <div
+        className="relative aspect-[4/3] w-full shrink-0 overflow-hidden rounded-md border border-white/15 bg-black/40"
+        aria-label={alt}
+      >
+        <Image
+          key={activeSrc}
+          src={activeSrc}
+          alt={alt}
+          fill
+          className="object-cover object-top"
+          sizes="(max-width: 768px) 100vw, 33vw"
+        />
+      </div>
+    );
+  }
+
+  const sideWheelPlaceholder = columnIndex >= 1;
+
   return (
     <div
       role="img"
       aria-label={`Column ${columnIndex + 1}, project ${projectIndex + 1} image placeholder`}
-      className="flex aspect-[4/3] w-full shrink-0 items-center justify-center rounded-md border border-dashed border-white/35 bg-white/5 font-nav text-xs font-light lowercase tracking-wide text-white/50"
+      className={
+        sideWheelPlaceholder
+          ? "aspect-[4/3] w-full shrink-0 rounded-md border border-emerald-400/25 bg-emerald-950/45 shadow-[inset_0_0_32px_rgba(6,78,59,0.45)] backdrop-blur-2xl backdrop-saturate-50"
+          : "flex aspect-[4/3] w-full shrink-0 items-center justify-center rounded-md border border-dashed border-white/35 bg-white/5 font-nav text-xs font-light lowercase tracking-wide text-white/50"
+      }
     >
-      image
+      {!sideWheelPlaceholder ? "image" : null}
     </div>
   );
 }
@@ -60,9 +129,11 @@ function Scene2ProjectImagePlaceholder({
 function Scene2ProjectColumn({
   columnIndex,
   descriptions,
+  imageSrcs,
 }: {
   columnIndex: number;
   descriptions: readonly string[];
+  imageSrcs?: readonly (ProjectImageSource | undefined)[];
 }) {
   const n = descriptions.length;
   const step = 360 / n;
@@ -148,9 +219,10 @@ function Scene2ProjectColumn({
               }}
             >
               <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-lg border border-white/15 bg-black/25 p-4 shadow-sm backdrop-blur-sm md:p-5">
-                <Scene2ProjectImagePlaceholder
+                <Scene2ProjectImageSlot
                   columnIndex={columnIndex}
                   projectIndex={projectIndex}
+                  src={imageSrcs?.[projectIndex]}
                 />
                 <p className="pt-4 font-nav text-sm font-light leading-relaxed text-white/90 md:text-base [overflow-wrap:anywhere]">
                   {description}
@@ -177,6 +249,7 @@ export function Scene2Portfolio({ heading }: { heading: string }) {
               key={columnIndex}
               columnIndex={columnIndex}
               descriptions={descriptions}
+              imageSrcs={SCENE_2_PROJECT_IMAGES[columnIndex]}
             />
           ))}
         </div>

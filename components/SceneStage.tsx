@@ -13,6 +13,13 @@ const SCENE_1_TEXT_BOXES = [
   "Seventh block — closing line or location.",
 ] as const;
 
+/** Three columns for scene 2 (left to right on md+). */
+const SCENE_2_TEXT_BOXES = [
+  "Left — featured project, hero case study, or primary work sample.",
+  "Center — secondary project, process notes, or metrics you want to highlight.",
+  "Right — gallery strip, stack of links, or a short list of experiments.",
+] as const;
+
 const SCENE_CONTENT: Record<
   SceneId,
   { heading: string; body: string }
@@ -23,7 +30,7 @@ const SCENE_CONTENT: Record<
   },
   2: {
     heading: "scene 2",
-    body: "Second scene — projects, case studies, or a gallery can live here.",
+    body: "",
   },
   3: {
     heading: "scene 3",
@@ -51,6 +58,18 @@ function Scene1ImagePlaceholder() {
   );
 }
 
+function Scene2CardImagePlaceholder({ index }: { index: number }) {
+  return (
+    <div
+      role="img"
+      aria-label={`Image placeholder ${index + 1}`}
+      className="flex aspect-[4/3] w-full shrink-0 items-center justify-center rounded-md border border-dashed border-white/35 bg-white/5 font-nav text-xs font-light lowercase tracking-wide text-white/50"
+    >
+      image
+    </div>
+  );
+}
+
 export function SceneStage() {
   const { scene } = useScene();
   const { heading, body } = SCENE_CONTENT[scene];
@@ -60,7 +79,9 @@ export function SceneStage() {
       <section
         key={scene}
         aria-label={`${heading} content`}
-        className="mx-auto flex min-h-0 w-full max-w-3xl flex-1 flex-col rounded-lg border border-white/20 bg-black/40 p-8 shadow-lg backdrop-blur-sm"
+        className={`mx-auto flex min-h-0 w-full flex-1 flex-col rounded-lg border border-white/20 bg-black/40 p-8 shadow-lg backdrop-blur-sm ${
+          scene === 2 ? "max-w-5xl" : "max-w-3xl"
+        }`}
       >
         {scene === 1 ? (
           <div className="flex flex-col gap-8 md:flex-row md:items-start md:gap-10">
@@ -83,6 +104,25 @@ export function SceneStage() {
               </div>
             </div>
           </div>
+        ) : scene === 2 ? (
+          <>
+            <h1 className="font-brand text-3xl font-thin uppercase tracking-wide md:text-4xl">
+              {heading}
+            </h1>
+            <div className="mt-6 flex min-h-0 flex-1 flex-col gap-4 md:flex-row md:items-stretch md:gap-5">
+              {SCENE_2_TEXT_BOXES.map((text, i) => (
+                <div
+                  key={i}
+                  className="flex min-h-0 min-w-0 flex-1 flex-col rounded-lg border border-white/15 bg-black/25 p-4 shadow-sm backdrop-blur-sm md:p-5"
+                >
+                  <Scene2CardImagePlaceholder index={i} />
+                  <p className="mt-auto pt-4 font-nav text-sm font-light leading-relaxed text-white/90 md:text-base">
+                    {text}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </>
         ) : (
           <>
             <h1 className="font-brand text-3xl font-thin uppercase tracking-wide md:text-4xl">

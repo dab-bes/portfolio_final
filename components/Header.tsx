@@ -21,7 +21,7 @@ export function Header() {
   return (
     <header className="flex min-h-56 w-full shrink-0 flex-col items-center justify-center gap-6 bg-black/60 px-4 py-8 text-white">
       <span className="font-brand text-[40px] font-thin uppercase tracking-wide md:text-[90px]">
-        Header
+        DANIEL ABBES
       </span>
 
       {/* Mobile: lines left, current scene label right */}

@@ -24,7 +24,7 @@ const SOCIAL: ReadonlyArray<{
     ariaLabel: "GitHub",
   },
   {
-    href: "https://bsky.app",
+    href: "https://app.flashes.blue/profile/dab8es.bsky.social",
     label: "bluesky",
     logoSrc: "/logos/bluesky.svg",
     ariaLabel: "Bluesky",

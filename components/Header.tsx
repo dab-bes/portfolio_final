@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { SCENE_IDS, useScene } from "@/components/SceneContext";
+import { SCENE_IDS, SCENE_LABELS, useScene } from "@/components/SceneContext";
 
 export function Header() {
   const { scene: selectedScene, setScene: setSelectedScene } = useScene();
@@ -40,7 +40,7 @@ export function Header() {
             <span className="h-0.5 w-5 rounded-full bg-white" aria-hidden />
           </button>
           <span className="truncate text-right font-nav text-sm font-light lowercase tracking-wide">
-            scene {selectedScene}
+            {SCENE_LABELS[selectedScene]}
           </span>
         </div>
 
@@ -65,15 +65,15 @@ export function Header() {
                   setMenuOpen(false);
                 }}
               >
-                scene {n}
+                {SCENE_LABELS[n]}
               </button>
             ))}
           </div>
         ) : null}
       </div>
 
-      {/* Desktop: one column per scene so spacing tracks viewport width */}
-      <div className="hidden w-full grid-cols-5 place-items-center gap-y-2 font-nav font-light lowercase md:grid">
+      {/* Desktop: equal columns so scene links span the width evenly */}
+      <div className="hidden w-full grid-cols-3 place-items-center gap-y-2 font-nav font-light lowercase md:grid">
         {SCENE_IDS.map((n) => (
           <button
             key={n}
@@ -83,7 +83,7 @@ export function Header() {
             }`}
             onClick={() => setSelectedScene(n)}
           >
-            scene {n}
+            {SCENE_LABELS[n]}
           </button>
         ))}
       </div>

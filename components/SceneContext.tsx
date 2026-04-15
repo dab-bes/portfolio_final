@@ -2,8 +2,15 @@
 
 import { createContext, useContext, useState, type ReactNode } from "react";
 
-export const SCENE_IDS = [1, 2, 3, 4, 5] as const;
+export const SCENE_IDS = [1, 2, 3] as const;
 export type SceneId = (typeof SCENE_IDS)[number];
+
+/** Display names for nav and scene headings (lowercase). */
+export const SCENE_LABELS: Record<SceneId, string> = {
+  1: "about me",
+  2: "portfolio",
+  3: "connect",
+};
 
 type SceneContextValue = {
   scene: SceneId;

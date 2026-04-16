@@ -102,8 +102,10 @@ export function Header() {
           <button
             key={n}
             type="button"
-            className={`whitespace-nowrap transition-opacity hover:opacity-100 ${
-              selectedScene === n ? "opacity-100 underline decoration-white/50 underline-offset-4" : "opacity-70"
+            className={`relative whitespace-nowrap pb-1 transition-[transform,opacity,text-shadow] duration-500 ease-out after:pointer-events-none after:absolute after:bottom-0 after:left-1/2 after:h-[0.5px] after:w-full after:-translate-x-1/2 after:origin-center after:bg-white/50 after:transition-transform after:duration-500 after:ease-out motion-reduce:scale-100 motion-reduce:text-shadow-none motion-reduce:transition-opacity motion-reduce:after:transition-none ${
+              selectedScene === n
+                ? "opacity-100 scale-[1.1] [text-shadow:0_0_18px_rgb(255_255_255/0.35),0_0_34px_rgb(255_255_255/0.14)] after:scale-x-100"
+                : "scale-100 text-shadow-none opacity-70 after:scale-x-0 hover:opacity-100 hover:scale-[1.1] hover:[text-shadow:0_0_18px_rgb(255_255_255/0.35),0_0_34px_rgb(255_255_255/0.14)] hover:after:scale-x-100"
             }`}
             onClick={() => setSelectedScene(n)}
           >

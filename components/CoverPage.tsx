@@ -88,7 +88,9 @@ export function CoverPage() {
         type="button"
         onClick={onEnter}
         disabled={!!glide}
-        className="relative z-10 font-nav text-sm font-light lowercase tracking-wide text-white/90 underline decoration-white/40 underline-offset-[10px] transition-colors hover:text-white hover:decoration-white/70 disabled:pointer-events-none disabled:opacity-50"
+        className={`relative z-10 font-nav text-sm font-light lowercase tracking-wide text-white/90 underline decoration-white/40 underline-offset-[10px] transition-[opacity,color,text-decoration-color] duration-700 ease-out hover:text-white hover:decoration-white/70 disabled:pointer-events-none ${
+          glide ? "opacity-0" : "opacity-100"
+        }`}
       >
         enter site
       </button>

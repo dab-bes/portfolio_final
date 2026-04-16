@@ -10,6 +10,13 @@ export function Header() {
   const menuWrapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (process.env.NODE_ENV === "development") {
+      console.log("[portfolio cover→studio] NEW: Header (scene layout) mounted");
+      return () => console.log("[portfolio studio→…] Header (scene layout) unmounted");
+    }
+  }, []);
+
+  useEffect(() => {
     if (!menuOpen) return;
     const onPointerDown = (e: PointerEvent) => {
       const el = menuWrapRef.current;
@@ -20,7 +27,7 @@ export function Header() {
   }, [menuOpen]);
 
   return (
-    <header className="flex min-h-56 w-full shrink-0 flex-col items-center justify-center gap-6 bg-black/60 px-4 py-8 text-white">
+    <header className="flex min-h-60 w-full shrink-0 flex-col items-center justify-center gap-6 bg-[linear-gradient(180deg,rgb(0_0_0/0.6)_0%,rgb(0_0_0/0.6)_calc(100%-20px),transparent_100%)] px-4 py-8 text-white">
       <div className="flex w-full flex-col items-center gap-4 text-center">
         <p className="font-nav text-xs font-light uppercase tracking-[0.35em] text-white/55">
           web developer
@@ -35,7 +42,10 @@ export function Header() {
       </div>
 
       {/* Mobile: lines left, current scene label right */}
-      <div ref={menuWrapRef} className="relative w-full max-w-xs md:hidden">
+      <div
+        ref={menuWrapRef}
+        className="animate-header-scene-nav-in relative w-full max-w-xs md:hidden"
+      >
         <div className="relative flex min-h-11 w-full items-center justify-between gap-3">
           <button
             type="button"
@@ -49,8 +59,12 @@ export function Header() {
             <span className="h-0.5 w-5 rounded-full bg-white" aria-hidden />
             <span className="h-0.5 w-5 rounded-full bg-white" aria-hidden />
           </button>
-          <span className="truncate text-right font-nav text-sm font-light lowercase tracking-wide">
-            {SCENE_LABELS[selectedScene]}
+          <span
+            className={`truncate text-right font-nav text-sm font-light lowercase tracking-wide ${
+              selectedScene == null ? "text-white/40" : ""
+            }`}
+          >
+            {selectedScene != null ? SCENE_LABELS[selectedScene] : "—"}
           </span>
         </div>
 
@@ -83,7 +97,7 @@ export function Header() {
       </div>
 
       {/* Desktop: equal columns so scene links span the width evenly */}
-      <div className="hidden w-full grid-cols-3 place-items-center gap-y-2 font-nav font-light lowercase md:grid">
+      <div className="animate-header-scene-nav-in hidden w-full grid-cols-3 place-items-center gap-y-2 font-nav font-light lowercase md:grid">
         {SCENE_IDS.map((n) => (
           <button
             key={n}

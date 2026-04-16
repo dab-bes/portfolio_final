@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useCallback, useRef, useState } from "react";
+import { startTransition, useCallback, useEffect, useRef, useState } from "react";
 import { HeaderLayoutMirror } from "@/components/HeaderLayoutMirror";
 
 export function CoverPage() {
@@ -11,10 +11,21 @@ export function CoverPage() {
   const h1Ref = useRef<HTMLHeadingElement>(null);
   const mirrorTitleRef = useRef<HTMLSpanElement>(null);
 
+  useEffect(() => {
+    if (process.env.NODE_ENV !== "development") return;
+    console.log("[portfolio:/] CoverPage mounted");
+    return () => console.log("[portfolio cover→studio] CoverPage unmounted (route leaving /)");
+  }, []);
+
   const goStudio = useCallback(() => {
     if (didNavigate.current) return;
     didNavigate.current = true;
-    router.push("/studio");
+    if (process.env.NODE_ENV === "development") {
+      console.log("[portfolio cover→studio] router.push(/studio) — next paint will mount studio layout");
+    }
+    startTransition(() => {
+      router.push("/studio");
+    });
   }, [router]);
 
   const onEnter = useCallback(() => {
@@ -44,12 +55,12 @@ export function CoverPage() {
   );
 
   return (
-    <div className="flex min-h-dvh flex-1 flex-col items-center justify-center gap-10 px-6 py-16 text-white">
-      <HeaderLayoutMirror titleMeasureRef={mirrorTitleRef} />
+    <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-10 px-4 py-16 text-white">
+      <HeaderLayoutMirror titleMeasureRef={mirrorTitleRef} coverGlideActive={glide !== null} />
 
-      <div className="flex w-full max-w-2xl flex-col items-center gap-4 text-center">
+      <div className="relative z-10 flex w-full max-w-2xl flex-col items-center gap-4 text-center">
         <div
-          className="flex flex-col items-center gap-4 transition-transform duration-700 ease-out will-change-transform"
+          className="flex w-full flex-col items-center gap-4 text-center transition-transform duration-700 ease-out will-change-transform"
           style={{
             transform: glide ? `translateY(${glide.dy}px)` : "translateY(0)",
           }}
@@ -60,9 +71,9 @@ export function CoverPage() {
           </p>
           <h1
             ref={h1Ref}
-            className="whitespace-nowrap font-brand text-5xl font-thin uppercase tracking-wide md:text-7xl lg:text-8xl"
+            className="whitespace-nowrap text-center font-brand text-5xl font-thin uppercase tracking-wide md:text-7xl lg:text-8xl"
           >
-            Daniel Abbes
+            DANIEL ABBES
           </h1>
         </div>
         <p
@@ -77,7 +88,7 @@ export function CoverPage() {
         type="button"
         onClick={onEnter}
         disabled={!!glide}
-        className="font-nav text-sm font-light lowercase tracking-wide text-white/90 underline decoration-white/40 underline-offset-[10px] transition-colors hover:text-white hover:decoration-white/70 disabled:pointer-events-none disabled:opacity-50"
+        className="relative z-10 font-nav text-sm font-light lowercase tracking-wide text-white/90 underline decoration-white/40 underline-offset-[10px] transition-colors hover:text-white hover:decoration-white/70 disabled:pointer-events-none disabled:opacity-50"
       >
         enter site
       </button>

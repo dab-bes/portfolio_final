@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 
 export const SCENE_IDS = [1, 2, 3] as const;
 export type SceneId = (typeof SCENE_IDS)[number];
@@ -13,14 +13,23 @@ export const SCENE_LABELS: Record<SceneId, string> = {
 };
 
 type SceneContextValue = {
-  scene: SceneId;
+  scene: SceneId | null;
   setScene: (scene: SceneId) => void;
 };
 
 const SceneContext = createContext<SceneContextValue | null>(null);
 
 export function SceneProvider({ children }: { children: ReactNode }) {
-  const [scene, setScene] = useState<SceneId>(1);
+  const [scene, setScene] = useState<SceneId | null>(null);
+
+  useEffect(() => {
+    if (process.env.NODE_ENV !== "development") return;
+    console.log("[portfolio cover→studio] NEW: SceneProvider mounted (studio layout)");
+    return () => {
+      console.log("[portfolio studio→…] SceneProvider unmounted (leaving /studio)");
+    };
+  }, []);
+
   return <SceneContext.Provider value={{ scene, setScene }}>{children}</SceneContext.Provider>;
 }
 

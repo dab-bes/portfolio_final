@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useScene, type SceneId, SCENE_LABELS } from "@/components/SceneContext";
 import { Scene1About } from "@/components/scenes/Scene1About";
 import { Scene2Portfolio } from "@/components/scenes/Scene2Portfolio";
@@ -33,6 +34,22 @@ const SCENE_CONTENT: Record<
 
 export function SceneStage() {
   const { scene } = useScene();
+
+  useEffect(() => {
+    if (process.env.NODE_ENV !== "development") return;
+    console.log("[portfolio cover→studio] NEW: SceneStage mounted");
+    return () => console.log("[portfolio studio→…] SceneStage unmounted");
+  }, []);
+
+  useEffect(() => {
+    if (process.env.NODE_ENV !== "development") return;
+    console.log("[portfolio:studio] SceneStage — active scene:", scene === null ? "(none selected)" : scene);
+  }, [scene]);
+
+  if (scene === null) {
+    return <div className="flex min-h-0 flex-1 flex-col px-4 py-8 text-white" />;
+  }
+
   const { heading, body } = SCENE_CONTENT[scene];
 
   return (

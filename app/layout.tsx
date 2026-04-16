@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Poppins, Ysabeau_Infant } from "next/font/google";
+import { Footer } from "@/components/Footer";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -40,7 +41,8 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${ysabeauInfant.variable} ${poppins.variable} h-full antialiased`}
     >
       <body className="flex min-h-dvh min-h-full flex-col bg-[url('/background.jpg')] bg-cover bg-center bg-no-repeat bg-[color:var(--background)]">
-        {children}
+        <div className="flex min-h-0 flex-1 flex-col">{children}</div>
+        <Footer />
       </body>
     </html>
   );

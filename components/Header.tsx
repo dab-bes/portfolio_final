@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { SCENE_IDS, SCENE_LABELS, useScene } from "@/components/SceneContext";
 
@@ -20,9 +21,18 @@ export function Header() {
 
   return (
     <header className="flex min-h-56 w-full shrink-0 flex-col items-center justify-center gap-6 bg-black/60 px-4 py-8 text-white">
-      <span className="font-brand text-[40px] font-thin uppercase tracking-wide md:text-[90px]">
-        DANIEL ABBES
-      </span>
+      <div className="flex w-full flex-col items-center gap-4 text-center">
+        <p className="font-nav text-xs font-light uppercase tracking-[0.35em] text-white/55">
+          web developer
+        </p>
+        <Link
+          href="/"
+          aria-label="Home"
+          className="whitespace-nowrap text-center font-brand text-5xl font-thin uppercase tracking-wide transition-opacity hover:opacity-90 md:text-7xl lg:text-8xl"
+        >
+          DANIEL ABBES
+        </Link>
+      </div>
 
       {/* Mobile: lines left, current scene label right */}
       <div ref={menuWrapRef} className="relative w-full max-w-xs md:hidden">

@@ -1,5 +1,5 @@
-import { SceneStage } from "@/components/SceneStage";
+import { CoverPage } from "@/components/CoverPage";
 
 export default function Home() {
-  return <SceneStage />;
+  return <CoverPage />;
 }

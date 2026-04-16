@@ -1,8 +1,5 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Poppins, Ysabeau_Infant } from "next/font/google";
-import { Footer } from "@/components/Footer";
-import { Header } from "@/components/Header";
-import { SceneProvider } from "@/components/SceneContext";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -42,14 +39,8 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${ysabeauInfant.variable} ${poppins.variable} h-full antialiased`}
     >
-      <body
-        className="min-h-dvh min-h-full flex flex-col bg-[url('/background.jpg')] bg-cover bg-center bg-no-repeat bg-[color:var(--background)]"
-      >
-        <SceneProvider>
-          <Header />
-          <main className="flex min-h-0 flex-1 flex-col">{children}</main>
-          <Footer />
-        </SceneProvider>
+      <body className="flex min-h-dvh min-h-full flex-col bg-[url('/background.jpg')] bg-cover bg-center bg-no-repeat bg-[color:var(--background)]">
+        {children}
       </body>
     </html>
   );

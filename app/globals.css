@@ -58,8 +58,8 @@ body {
   }
 }
 
-/* About scene: staggered soft raise-in (title → bio → portrait). */
-@keyframes scene-about-raise-in {
+/* Scene content: shared raise-in (About / Portfolio / Connect titles + About stagger). */
+@keyframes scene-raise-in {
   from {
     opacity: 0;
     transform: translate3d(0, 0.875rem, 0);
@@ -70,25 +70,130 @@ body {
   }
 }
 
-.animate-scene-about-in-title {
-  opacity: 0;
-  animation: scene-about-raise-in 0.68s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+@keyframes scene-fall-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -0.875rem, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
 }
 
+.animate-scene-in-title {
+  opacity: 0;
+  animation: scene-raise-in 0.68s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* About scene: staggered soft raise-in (title → bio → portrait). */
 .animate-scene-about-in-bio {
   opacity: 0;
-  animation: scene-about-raise-in 0.68s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+  animation: scene-raise-in 0.68s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
 }
 
 .animate-scene-about-in-photo {
   opacity: 0;
-  animation: scene-about-raise-in 0.68s cubic-bezier(0.22, 1, 0.36, 1) 0.42s forwards;
+  animation: scene-raise-in 0.68s cubic-bezier(0.22, 1, 0.36, 1) 0.42s forwards;
+}
+
+.animate-scene-about-in-resume {
+  opacity: 0;
+  animation: scene-fall-in 0.68s cubic-bezier(0.22, 1, 0.36, 1) 0.42s forwards;
+}
+
+/* About scene: tight stagger for employer / school logos (right column). */
+.animate-scene-about-in-logo-1 {
+  opacity: 0;
+  animation: scene-raise-in 0.58s cubic-bezier(0.22, 1, 0.36, 1) 0.26s forwards;
+}
+
+.animate-scene-about-in-logo-2 {
+  opacity: 0;
+  animation: scene-raise-in 0.58s cubic-bezier(0.22, 1, 0.36, 1) 0.34s forwards;
+}
+
+.animate-scene-about-in-logo-3 {
+  opacity: 0;
+  animation: scene-raise-in 0.58s cubic-bezier(0.22, 1, 0.36, 1) 0.42s forwards;
+}
+
+/* Connect column: cascading raise-in (intro copy → fields → submit). */
+.animate-connect-form-in-1 {
+  opacity: 0;
+  animation: scene-raise-in 0.62s cubic-bezier(0.22, 1, 0.36, 1) 0.08s forwards;
+}
+
+.animate-connect-form-in-2 {
+  opacity: 0;
+  animation: scene-raise-in 0.62s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+}
+
+.animate-connect-form-in-3 {
+  opacity: 0;
+  animation: scene-raise-in 0.62s cubic-bezier(0.22, 1, 0.36, 1) 0.32s forwards;
+}
+
+.animate-connect-form-in-4 {
+  opacity: 0;
+  animation: scene-raise-in 0.62s cubic-bezier(0.22, 1, 0.36, 1) 0.44s forwards;
+}
+
+.animate-connect-form-in-5 {
+  opacity: 0;
+  animation: scene-raise-in 0.62s cubic-bezier(0.22, 1, 0.36, 1) 0.56s forwards;
+}
+
+.animate-connect-form-in-6 {
+  opacity: 0;
+  animation: scene-raise-in 0.62s cubic-bezier(0.22, 1, 0.36, 1) 0.68s forwards;
+}
+
+/* Connect right column: soft lift for social + location + email (globe unchanged). */
+.animate-connect-footer-in-1 {
+  opacity: 0;
+  animation: scene-raise-in 0.62s cubic-bezier(0.22, 1, 0.36, 1) 0.48s forwards;
+}
+
+.animate-connect-footer-in-2 {
+  opacity: 0;
+  animation: scene-raise-in 0.62s cubic-bezier(0.22, 1, 0.36, 1) 0.58s forwards;
+}
+
+.animate-connect-footer-in-3 {
+  opacity: 0;
+  animation: scene-raise-in 0.62s cubic-bezier(0.22, 1, 0.36, 1) 0.68s forwards;
+}
+
+.animate-connect-footer-in-4 {
+  opacity: 0;
+  animation: scene-raise-in 0.62s cubic-bezier(0.22, 1, 0.36, 1) 0.82s forwards;
+}
+
+.animate-connect-footer-in-5 {
+  opacity: 0;
+  animation: scene-raise-in 0.62s cubic-bezier(0.22, 1, 0.36, 1) 0.94s forwards;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .animate-scene-about-in-title,
+  .animate-scene-in-title,
   .animate-scene-about-in-bio,
-  .animate-scene-about-in-photo {
+  .animate-scene-about-in-photo,
+  .animate-scene-about-in-resume,
+  .animate-scene-about-in-logo-1,
+  .animate-scene-about-in-logo-2,
+  .animate-scene-about-in-logo-3,
+  .animate-connect-form-in-1,
+  .animate-connect-form-in-2,
+  .animate-connect-form-in-3,
+  .animate-connect-form-in-4,
+  .animate-connect-form-in-5,
+  .animate-connect-form-in-6,
+  .animate-connect-footer-in-1,
+  .animate-connect-footer-in-2,
+  .animate-connect-footer-in-3,
+  .animate-connect-footer-in-4,
+  .animate-connect-footer-in-5 {
     animation: none;
     opacity: 1;
     transform: none;

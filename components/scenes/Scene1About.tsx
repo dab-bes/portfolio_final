@@ -36,7 +36,7 @@ export function Scene1About({
   return (
     <div className="relative flex min-h-0 w-full flex-1 flex-col gap-8 md:flex-row md:items-stretch md:gap-10">
       <div className="min-w-0 flex-1">
-        <h1 className="animate-scene-about-in-title font-brand text-3xl font-thin normal-case tracking-wide md:text-4xl">
+        <h1 className="animate-scene-in-title font-brand text-3xl font-thin normal-case tracking-wide md:text-4xl">
           {heading}
         </h1>
         <div className="mt-6">
@@ -64,7 +64,7 @@ export function Scene1About({
         <div className="flex flex-col md:min-h-0 md:flex-1">
           <div className="flex min-h-0 flex-col md:min-h-0 md:flex-1">
             <div className="flex w-full flex-col items-center gap-6 px-2 py-4 md:flex-1 md:justify-center md:py-5">
-              <picture className="block w-full max-w-[4.5rem] shrink-0">
+              <picture className="animate-scene-about-in-logo-1 block w-full max-w-[4.5rem] shrink-0">
                 <source srcSet="/logos/pacsun.svg" type="image/svg+xml" />
                 <img
                   src="/logos/pacsun.png"
@@ -75,7 +75,7 @@ export function Scene1About({
                   decoding="async"
                 />
               </picture>
-              <picture>
+              <picture className="animate-scene-about-in-logo-2">
                 <source srcSet="/logos/bbrew.svg" type="image/svg+xml" />
                 <img
                   src="/logos/bbrew.png"
@@ -86,7 +86,7 @@ export function Scene1About({
                   decoding="async"
                 />
               </picture>
-              <picture className="block w-full max-w-[4.5rem] shrink-0">
+              <picture className="animate-scene-about-in-logo-3 block w-full max-w-[4.5rem] shrink-0">
                 <source srcSet="/logos/bu.svg" type="image/svg+xml" />
                 <img
                   src="/logos/bu.png"
@@ -107,7 +107,7 @@ export function Scene1About({
       <a
         href={RESUME_HREF}
         download={RESUME_FILE}
-        className="absolute right-0 top-0 z-10 inline-flex px-0 py-0 font-nav text-xs font-light lowercase tracking-wide text-white transition-opacity hover:opacity-80 active:opacity-70"
+        className="animate-scene-about-in-resume absolute right-0 top-0 z-10 inline-flex border-b border-white/35 px-0 pb-px font-nav text-xs font-light lowercase tracking-wide text-white transition-[opacity,border-color] hover:border-white/55 hover:opacity-80 active:opacity-70"
       >
         download resume
       </a>

@@ -4,6 +4,12 @@ import { ConnectGlobe } from "@/components/ConnectGlobe";
 
 const FORMCARRY_ACTION = "https://formcarry.com/s/B-l9Gc-B8hp";
 
+const CONNECT_FOOTER_LI_LIFT = [
+  "animate-connect-footer-in-1",
+  "animate-connect-footer-in-2",
+  "animate-connect-footer-in-3",
+] as const;
+
 const SOCIAL: ReadonlyArray<{
   href: string;
   label: string;
@@ -34,17 +40,17 @@ const SOCIAL: ReadonlyArray<{
 export function Scene3Connect({ heading }: { heading: string }) {
   return (
     <>
-      <h1 className="font-brand text-3xl font-thin normal-case tracking-wide md:text-4xl">
+      <h1 className="animate-scene-in-title font-brand text-3xl font-thin normal-case tracking-wide md:text-4xl">
         {heading}
       </h1>
       <div className="mt-6 flex min-h-0 flex-1 flex-col gap-6 md:flex-row md:items-stretch md:gap-8">
         <div className="flex min-h-0 min-w-0 flex-1 flex-col rounded-lg border border-white/15 bg-black/25 p-4 shadow-sm backdrop-blur-sm md:p-5">
           <div className="mb-4">
-            <p className="font-nav text-xs font-light uppercase tracking-[0.2em] text-white/50">
+            <p className="animate-connect-form-in-1 font-nav text-sm font-light uppercase leading-relaxed tracking-[0.2em] text-white/85">
               let&apos;s create
             </p>
-            <p className="mt-1 font-nav text-sm font-light leading-relaxed text-white/85">
-              I&apos;m ready. I&apos;m listening. Let&apos;s turn imagination into reality.
+            <p className="animate-connect-form-in-2 mt-1 font-nav text-xs font-light lowercase tracking-wide text-white/50">
+              i&apos;m ready. i&apos;m listening. let&apos;s turn imagination into reality.
             </p>
           </div>
           <form
@@ -53,7 +59,7 @@ export function Scene3Connect({ heading }: { heading: string }) {
             acceptCharset="UTF-8"
             className="flex min-h-0 flex-1 flex-col gap-4"
           >
-            <div className="flex flex-col gap-2">
+            <div className="animate-connect-form-in-3 flex flex-col gap-2">
               <label
                 htmlFor="connect-name"
                 className="font-nav text-sm font-light lowercase tracking-wide text-white/70"
@@ -70,7 +76,7 @@ export function Scene3Connect({ heading }: { heading: string }) {
                 className="w-full rounded-lg border border-white/15 bg-black/40 px-3 py-2.5 font-nav text-sm font-light text-white placeholder:text-white/40 focus:border-white/30 focus:outline-none focus:ring-1 focus:ring-white/20"
               />
             </div>
-            <div className="flex flex-col gap-2">
+            <div className="animate-connect-form-in-4 flex flex-col gap-2">
               <label
                 htmlFor="connect-email"
                 className="font-nav text-sm font-light lowercase tracking-wide text-white/70"
@@ -87,7 +93,7 @@ export function Scene3Connect({ heading }: { heading: string }) {
                 className="w-full rounded-lg border border-white/15 bg-black/40 px-3 py-2.5 font-nav text-sm font-light text-white placeholder:text-white/40 focus:border-white/30 focus:outline-none focus:ring-1 focus:ring-white/20"
               />
             </div>
-            <div className="flex min-h-0 flex-1 flex-col gap-2">
+            <div className="animate-connect-form-in-5 flex min-h-0 flex-1 flex-col gap-2">
               <label
                 htmlFor="connect-message"
                 className="font-nav text-sm font-light lowercase tracking-wide text-white/70"
@@ -105,7 +111,7 @@ export function Scene3Connect({ heading }: { heading: string }) {
             </div>
             <button
               type="submit"
-              className="mt-auto w-full rounded-lg border border-white/20 bg-white/10 px-4 py-2.5 font-nav text-sm font-light lowercase tracking-wide text-white transition-colors hover:bg-white/15 active:bg-white/20 md:w-auto md:self-start"
+              className="animate-connect-form-in-6 mt-auto w-full rounded-lg border border-white/20 bg-white/10 px-4 py-2.5 font-nav text-sm font-light lowercase tracking-wide text-white transition-colors hover:bg-white/15 active:bg-white/20 md:w-auto md:self-start"
             >
               send message
             </button>
@@ -116,8 +122,15 @@ export function Scene3Connect({ heading }: { heading: string }) {
           <ConnectGlobe />
           <div className="text-container mt-auto flex w-full min-w-0 flex-row flex-wrap items-end justify-between gap-x-4 gap-y-3 pt-4 md:pt-0">
             <ul className="m-0 flex max-w-[min(20rem,100%)] list-none flex-row flex-wrap justify-start gap-2 [text-shadow:0_1px_12px_rgba(0,0,0,0.85)]">
-              {SOCIAL.map(({ href, label, logoSrc, ariaLabel }) => (
-                <li key={label}>
+              {SOCIAL.map(({ href, label, logoSrc, ariaLabel }, index) => (
+                <li
+                  key={label}
+                  className={
+                    CONNECT_FOOTER_LI_LIFT[
+                      Math.min(index, CONNECT_FOOTER_LI_LIFT.length - 1)
+                    ]
+                  }
+                >
                   <a
                     href={href}
                     target="_blank"
@@ -145,10 +158,10 @@ export function Scene3Connect({ heading }: { heading: string }) {
               ))}
             </ul>
             <div className="max-w-[min(16rem,100%)] shrink-0 text-right [text-shadow:0_1px_12px_rgba(0,0,0,0.85)]">
-              <p className="font-nav text-sm font-light text-white/90 md:text-base">
+              <p className="animate-connect-footer-in-4 font-nav text-sm font-light text-white/90 md:text-base">
                 brooklyn, new york
               </p>
-              <p className="mt-1 font-nav text-sm font-light text-white/70 md:text-base">
+              <p className="animate-connect-footer-in-5 mt-1 font-nav text-sm font-light text-white/70 md:text-base">
                 <a
                   href="mailto:cdabbes@proton.me"
                   className="text-white/90 underline decoration-white/30 underline-offset-2 transition-colors hover:decoration-white/60"

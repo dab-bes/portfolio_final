@@ -61,6 +61,31 @@ function magnetTowardFace(r: number, step: number): number {
   return r + err * pull;
 }
 
+/** Same pull as `magnetTowardFace`, but toward a fixed angle (e.g. nearest full turn for face 0). */
+function magnetTowardTarget(r: number, target: number): number {
+  const err = target - r;
+  const a = Math.abs(err);
+  if (a < 0.02) return target;
+  const t = a / 56;
+  const pull = 0.012 + 0.075 / (1 + t * t);
+  return r + err * pull;
+}
+
+function normalizeRotation0To360(r: number): number {
+  return ((r % 360) + 360) % 360;
+}
+
+/** Degrees / second — exponential damping until low speed, then snap to first project (0° mod 360). */
+function scene2IntroSpinParams(columnIndex: number): {
+  initialVelocity: number;
+  damping: number;
+  magnetBelow: number;
+} {
+  const direction = columnIndex % 2 === 0 ? 1 : -1;
+  const initialVelocity = direction * (620 + columnIndex * 95);
+  return { initialVelocity, damping: 2.35, magnetBelow: 38 };
+}
+
 function Scene2ProjectImageSlot({
   columnIndex,
   projectIndex,
@@ -141,14 +166,79 @@ function Scene2ProjectColumn({
   const dragRef = useRef({ y: 0, rotation: 0 });
   const draggingRef = useRef(false);
   const viewportRef = useRef<HTMLDivElement>(null);
+  const introRafRef = useRef(0);
+  const introCancelRef = useRef(false);
+
+  const cancelIntroSpin = useCallback(() => {
+    introCancelRef.current = true;
+    if (introRafRef.current) {
+      cancelAnimationFrame(introRafRef.current);
+      introRafRef.current = 0;
+    }
+  }, []);
+
+  useEffect(() => {
+    introCancelRef.current = false;
+    if (
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      return;
+    }
+
+    const { initialVelocity, damping, magnetBelow } =
+      scene2IntroSpinParams(columnIndex);
+    const anim = { r: 0, v: initialVelocity };
+    let last = performance.now();
+
+    const tick = (now: number) => {
+      if (introCancelRef.current) return;
+      const dt = Math.min(1 / 30, (now - last) / 1000);
+      last = now;
+
+      let { r, v } = anim;
+      if (Math.abs(v) >= magnetBelow) {
+        r += v * dt;
+        v *= Math.exp(-damping * dt);
+      } else {
+        v *= Math.exp(-damping * 1.25 * dt);
+        const goal = Math.round(r / 360) * 360;
+        r = magnetTowardTarget(r + v * dt, goal);
+        if (Math.abs(v) < 0.35) v = 0;
+      }
+      anim.r = r;
+      anim.v = v;
+
+      const goal = Math.round(r / 360) * 360;
+      const settled = Math.abs(v) < 0.2 && Math.abs(r - goal) < 0.04;
+      if (settled) {
+        const final = normalizeRotation0To360(goal);
+        anim.r = final;
+        setRotation(final);
+        introRafRef.current = 0;
+        return;
+      }
+
+      setRotation(r);
+      introRafRef.current = requestAnimationFrame(tick);
+    };
+
+    introRafRef.current = requestAnimationFrame(tick);
+    return () => {
+      introCancelRef.current = true;
+      cancelAnimationFrame(introRafRef.current);
+      introRafRef.current = 0;
+    };
+  }, [columnIndex, step]);
 
   const onPointerDown = useCallback(
     (e: ReactPointerEvent<HTMLDivElement>) => {
+      cancelIntroSpin();
       e.currentTarget.setPointerCapture(e.pointerId);
       draggingRef.current = true;
       dragRef.current = { y: e.clientY, rotation };
     },
-    [rotation],
+    [rotation, cancelIntroSpin],
   );
 
   const onPointerMove = useCallback(
@@ -165,6 +255,7 @@ function Scene2ProjectColumn({
     const el = viewportRef.current;
     if (!el) return;
     const onWheel = (e: WheelEvent) => {
+      cancelIntroSpin();
       e.preventDefault();
       setRotation((r) => magnetTowardFace(r - e.deltaY * 0.2, step));
     };
@@ -172,7 +263,7 @@ function Scene2ProjectColumn({
     return () => {
       el.removeEventListener("wheel", onWheel);
     };
-  }, [step]);
+  }, [step, cancelIntroSpin]);
 
   const onPointerUp = useCallback((e: ReactPointerEvent<HTMLDivElement>) => {
     if (e.currentTarget.hasPointerCapture(e.pointerId)) {
@@ -239,7 +330,7 @@ function Scene2ProjectColumn({
 export function Scene2Portfolio({ heading }: { heading: string }) {
   return (
     <>
-      <h1 className="font-brand text-3xl font-thin normal-case tracking-wide md:text-4xl">
+      <h1 className="animate-scene-in-title font-brand text-3xl font-thin normal-case tracking-wide md:text-4xl">
         {heading}
       </h1>
       <div className="portfolio mt-6 flex min-h-0 flex-1 flex-col">

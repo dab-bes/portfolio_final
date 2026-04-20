@@ -4,6 +4,9 @@ import { useRouter } from "next/navigation";
 import { startTransition, useCallback, useEffect, useRef, useState } from "react";
 import { HeaderLayoutMirror } from "@/components/HeaderLayoutMirror";
 
+/** Extra upward travel (px) past the measured mirror alignment. */
+const COVER_GLIDE_EXTRA_UP_PX = 2;
+
 export function CoverPage() {
   const router = useRouter();
   const [glide, setGlide] = useState<{ dy: number } | null>(null);
@@ -42,7 +45,10 @@ export function CoverPage() {
       return;
     }
 
-    const dy = target.getBoundingClientRect().top - h1.getBoundingClientRect().top;
+    const dy =
+      target.getBoundingClientRect().top -
+      h1.getBoundingClientRect().top -
+      COVER_GLIDE_EXTRA_UP_PX;
     setGlide({ dy });
   }, [glide, goStudio]);
 

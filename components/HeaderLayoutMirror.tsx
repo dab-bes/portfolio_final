@@ -1,9 +1,12 @@
 "use client";
 
 import { useEffect, type RefObject } from "react";
+import { headerBackdropBgClass } from "@/lib/headerBackdrop";
 
-const HEADER_BACKDROP =
-  "bg-[linear-gradient(180deg,rgb(0_0_0/0.6)_0%,rgb(0_0_0/0.6)_calc(100%-20px),transparent_100%)]";
+const HEADER_BACKDROP = headerBackdropBgClass;
+
+/** Extra length (px) of opener-only black below the mirror header; studio Header unchanged. */
+const COVER_OPENER_BACKDROP_EXTRA_BOTTOM_PX = 4;
 
 /**
  * Invisible clone of the studio header layout (typography + nav row heights) so
@@ -36,9 +39,10 @@ export function HeaderLayoutMirror({
       aria-hidden
     >
       <div
-        className={`absolute inset-0 ${HEADER_BACKDROP} transition-opacity duration-700 ease-out ${
+        className={`absolute inset-x-0 top-0 ${HEADER_BACKDROP} transition-opacity duration-700 ease-out ${
           coverGlideActive ? "opacity-100" : "opacity-0"
         }`}
+        style={{ bottom: -COVER_OPENER_BACKDROP_EXTRA_BOTTOM_PX }}
       />
       <div className="relative flex w-full flex-col items-center gap-4 text-center opacity-0">
         <p className="font-nav text-xs font-light uppercase tracking-[0.35em] text-white/55">

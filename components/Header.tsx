@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { SCENE_IDS, SCENE_LABELS, useScene } from "@/components/SceneContext";
+import { headerBackdropBgClass } from "@/lib/headerBackdrop";
 
 export function Header() {
   const { scene: selectedScene, setScene: setSelectedScene } = useScene();
@@ -27,7 +28,9 @@ export function Header() {
   }, [menuOpen]);
 
   return (
-    <header className="flex min-h-60 w-full shrink-0 flex-col items-center justify-center gap-6 bg-[linear-gradient(180deg,rgb(0_0_0/0.6)_0%,rgb(0_0_0/0.6)_calc(100%-20px),transparent_100%)] px-4 py-8 text-white">
+    <header
+      className={`flex min-h-60 w-full shrink-0 flex-col items-center justify-center gap-6 ${headerBackdropBgClass} px-4 py-8 text-white`}
+    >
       <div className="flex w-full flex-col items-center gap-4 text-center">
         <p className="font-nav text-xs font-light uppercase tracking-[0.35em] text-white/55">
           web developer

@@ -57,3 +57,40 @@ body {
     opacity: 1;
   }
 }
+
+/* About scene: staggered soft raise-in (title → bio → portrait). */
+@keyframes scene-about-raise-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 0.875rem, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.animate-scene-about-in-title {
+  opacity: 0;
+  animation: scene-about-raise-in 0.68s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.animate-scene-about-in-bio {
+  opacity: 0;
+  animation: scene-about-raise-in 0.68s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+}
+
+.animate-scene-about-in-photo {
+  opacity: 0;
+  animation: scene-about-raise-in 0.68s cubic-bezier(0.22, 1, 0.36, 1) 0.42s forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-scene-about-in-title,
+  .animate-scene-about-in-bio,
+  .animate-scene-about-in-photo {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}

@@ -81,6 +81,22 @@ body {
   }
 }
 
+/* Scene panel: slight scale-up when a scene opens (remounts on scene change via key). */
+@keyframes scene-stage-grow-in {
+  from {
+    transform: scale(0.97);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.animate-scene-stage-in {
+  transform: scale(0.97);
+  transform-origin: center center;
+  animation: scene-stage-grow-in 0.72s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
 .animate-scene-in-title {
   opacity: 0;
   animation: scene-raise-in 0.68s cubic-bezier(0.22, 1, 0.36, 1) forwards;
@@ -149,7 +165,25 @@ body {
   animation: scene-raise-in 0.62s cubic-bezier(0.22, 1, 0.36, 1) 0.68s forwards;
 }
 
-/* Connect right column: soft lift for social + location + email (globe unchanged). */
+/* Connect: globe — soft rise, fade, and slight scale when Connect scene opens. */
+@keyframes globe-float-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 1rem, 0) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+.animate-globe-float-in {
+  opacity: 0;
+  animation: globe-float-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.16s forwards;
+  transform-origin: center center;
+}
+
+/* Connect right column: soft lift for social + location + email. */
 .animate-connect-footer-in-1 {
   opacity: 0;
   animation: scene-raise-in 0.62s cubic-bezier(0.22, 1, 0.36, 1) 0.48s forwards;
@@ -193,7 +227,9 @@ body {
   .animate-connect-footer-in-2,
   .animate-connect-footer-in-3,
   .animate-connect-footer-in-4,
-  .animate-connect-footer-in-5 {
+  .animate-connect-footer-in-5,
+  .animate-scene-stage-in,
+  .animate-globe-float-in {
     animation: none;
     opacity: 1;
     transform: none;

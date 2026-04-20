@@ -57,7 +57,7 @@ export function SceneStage() {
       <section
         key={scene}
         aria-label={`${heading} content`}
-        className={`mx-auto flex min-h-0 w-full flex-1 flex-col rounded-lg bg-black/40 p-8 shadow-lg backdrop-blur-sm ${
+        className={`animate-scene-stage-in relative mx-auto flex min-h-0 w-full flex-1 flex-col rounded-2xl bg-black/40 p-8 shadow-lg backdrop-blur-sm before:pointer-events-none before:absolute before:inset-[10px] before:rounded-[calc(1rem-10px)] before:border before:border-solid before:border-white/45 before:content-[''] ${
           scene === 2 || scene === 3 ? "max-w-5xl" : "max-w-3xl md:max-w-5xl"
         }`}
       >

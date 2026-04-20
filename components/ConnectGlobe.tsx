@@ -51,7 +51,7 @@ export function ConnectGlobe() {
 
   return (
     <div
-      className="relative isolate mx-auto w-full min-w-0 shrink-0 [aspect-ratio:1/1]"
+      className="animate-globe-float-in relative isolate mx-auto w-full min-w-0 shrink-0 [aspect-ratio:1/1]"
       style={{ maxWidth: `min(100%, ${GLOBE_DISPLAY_MAX_PX}px)` }}
     >
       <div ref={globeStackRef} className="absolute inset-0 rounded-full">

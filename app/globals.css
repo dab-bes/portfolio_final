@@ -31,6 +31,16 @@ html::-webkit-scrollbar {
   display: none;
 }
 
+/* Scrollable regions: hide scrollbar chrome; scrolling still works. */
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 /* Page photo: use Tailwind on <body> in layout.tsx (raw body background rules here get merged away by Tailwind v4). */
 body {
   color: var(--foreground);

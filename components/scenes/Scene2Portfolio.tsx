@@ -4,6 +4,7 @@ import Image from "next/image";
 import {
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -12,6 +13,21 @@ import {
 } from "react";
 
 type ProjectImageSource = string | readonly string[];
+
+const SCENE2_CAROUSEL_MQ = "(max-width: 767px)";
+
+function useIsBelowMd(): boolean {
+  const [q, setQ] = useState(false);
+  useLayoutEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia(SCENE2_CAROUSEL_MQ);
+    setQ(mq.matches);
+    const on = () => setQ(mq.matches);
+    mq.addEventListener("change", on);
+    return () => mq.removeEventListener("change", on);
+  }, []);
+  return q;
+}
 
 const LEFT_COLUMN_THIRD_CYCLING_IMAGES = [
   "/project1/loadingscreen.png",
@@ -155,16 +171,26 @@ function Scene2ProjectColumn({
   columnIndex,
   descriptions,
   imageSrcs,
+  deferAxisToSwipeColumns = false,
+  onColumnHorizontal,
 }: {
   columnIndex: number;
   descriptions: readonly string[];
   imageSrcs?: readonly (ProjectImageSource | undefined)[];
+  /** When true, wait for a dominant move axis so horizontal can change the column strip vs vertical 3D wheel. */
+  deferAxisToSwipeColumns?: boolean;
+  onColumnHorizontal?: (e: {
+    phase: "move" | "end" | "cancel";
+    deltaX: number;
+  }) => void;
 }) {
   const n = descriptions.length;
   const step = 360 / n;
   const [rotation, setRotation] = useState(0);
   const dragRef = useRef({ y: 0, rotation: 0 });
   const draggingRef = useRef(false);
+  const axisRef = useRef<"u" | "h" | "v">("u");
+  const startRef = useRef({ x: 0, y: 0, rotation: 0 });
   const viewportRef = useRef<HTMLDivElement>(null);
   const introRafRef = useRef(0);
   const introCancelRef = useRef(false);
@@ -234,21 +260,51 @@ function Scene2ProjectColumn({
   const onPointerDown = useCallback(
     (e: ReactPointerEvent<HTMLDivElement>) => {
       cancelIntroSpin();
-      e.currentTarget.setPointerCapture(e.pointerId);
-      draggingRef.current = true;
-      dragRef.current = { y: e.clientY, rotation };
+      if (!deferAxisToSwipeColumns) {
+        e.currentTarget.setPointerCapture(e.pointerId);
+        draggingRef.current = true;
+        axisRef.current = "v";
+        dragRef.current = { y: e.clientY, rotation };
+        return;
+      }
+      axisRef.current = "u";
+      startRef.current = { x: e.clientX, y: e.clientY, rotation };
     },
-    [rotation, cancelIntroSpin],
+    [rotation, cancelIntroSpin, deferAxisToSwipeColumns],
   );
 
   const onPointerMove = useCallback(
     (e: ReactPointerEvent<HTMLDivElement>) => {
-      if (!draggingRef.current) return;
+      if (deferAxisToSwipeColumns) {
+        if (axisRef.current === "u") {
+          const dx = e.clientX - startRef.current.x;
+          const dy = e.clientY - startRef.current.y;
+          if (dx * dx + dy * dy < 100) return;
+          if (Math.abs(dx) > Math.abs(dy)) {
+            axisRef.current = "h";
+            onColumnHorizontal?.({ phase: "move", deltaX: dx });
+            return;
+          }
+          axisRef.current = "v";
+          e.currentTarget.setPointerCapture(e.pointerId);
+          draggingRef.current = true;
+          dragRef.current = { y: e.clientY, rotation: startRef.current.rotation };
+        } else if (axisRef.current === "h") {
+          onColumnHorizontal?.({
+            phase: "move",
+            deltaX: e.clientX - startRef.current.x,
+          });
+          return;
+        }
+      } else {
+        if (!draggingRef.current) return;
+      }
+      if (axisRef.current !== "v" || !draggingRef.current) return;
       const dy = e.clientY - dragRef.current.y;
       const raw = dragRef.current.rotation - dy * 0.28;
       setRotation(magnetTowardFace(raw, step));
     },
-    [step],
+    [deferAxisToSwipeColumns, onColumnHorizontal, step],
   );
 
   useEffect(() => {
@@ -265,12 +321,50 @@ function Scene2ProjectColumn({
     };
   }, [step, cancelIntroSpin]);
 
-  const onPointerUp = useCallback((e: ReactPointerEvent<HTMLDivElement>) => {
-    if (e.currentTarget.hasPointerCapture(e.pointerId)) {
-      e.currentTarget.releasePointerCapture(e.pointerId);
-    }
-    draggingRef.current = false;
-  }, []);
+  const onPointerUp = useCallback(
+    (e: ReactPointerEvent<HTMLDivElement>) => {
+      if (deferAxisToSwipeColumns) {
+        if (axisRef.current === "h") {
+          onColumnHorizontal?.({
+            phase: "end",
+            deltaX: e.clientX - startRef.current.x,
+          });
+        }
+        if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+          e.currentTarget.releasePointerCapture(e.pointerId);
+        }
+        axisRef.current = "u";
+        draggingRef.current = false;
+        return;
+      }
+      if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      }
+      draggingRef.current = false;
+    },
+    [deferAxisToSwipeColumns, onColumnHorizontal],
+  );
+
+  const onPointerCancel = useCallback(
+    (e: ReactPointerEvent<HTMLDivElement>) => {
+      if (deferAxisToSwipeColumns) {
+        if (axisRef.current === "h") {
+          onColumnHorizontal?.({ phase: "cancel", deltaX: 0 });
+        }
+        if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+          e.currentTarget.releasePointerCapture(e.pointerId);
+        }
+        axisRef.current = "u";
+        draggingRef.current = false;
+        return;
+      }
+      if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      }
+      draggingRef.current = false;
+    },
+    [deferAxisToSwipeColumns, onColumnHorizontal],
+  );
 
   const activeIndex =
     n > 0 ? ((Math.round(rotation / step) % n) + n) % n : 0;
@@ -288,9 +382,10 @@ function Scene2ProjectColumn({
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
-        onPointerCancel={onPointerUp}
+        onPointerCancel={onPointerCancel}
         onLostPointerCapture={() => {
           draggingRef.current = false;
+          if (deferAxisToSwipeColumns) axisRef.current = "u";
         }}
       >
         <div
@@ -328,22 +423,136 @@ function Scene2ProjectColumn({
 }
 
 export function Scene2Portfolio({ heading }: { heading: string }) {
+  const isNarrow = useIsBelowMd();
+  const [columnPage, setColumnPage] = useState(0);
+  const [dragX, setDragX] = useState(0);
+  const viewportWRef = useRef(0);
+  const columnViewportRef = useRef<HTMLDivElement | null>(null);
+
+  const onColumnHorizontal = useCallback(
+    (e: { phase: "move" | "end" | "cancel"; deltaX: number }) => {
+      if (e.phase === "move") {
+        setDragX(e.deltaX);
+        return;
+      }
+      if (e.phase === "cancel") {
+        setDragX(0);
+        return;
+      }
+      setDragX(0);
+      setColumnPage((c) => {
+        const w = viewportWRef.current;
+        const th = w > 0 ? w * 0.2 : 56;
+        if (e.deltaX < -th) return Math.min(2, c + 1);
+        if (e.deltaX > th) return Math.max(0, c - 1);
+        return c;
+      });
+    },
+    [],
+  );
+
+  useLayoutEffect(() => {
+    if (!isNarrow) return;
+    const el = columnViewportRef.current;
+    if (!el) return;
+    const read = () => {
+      viewportWRef.current = el.getBoundingClientRect().width;
+    };
+    read();
+    const ro = new ResizeObserver(read);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [isNarrow]);
+
   return (
     <>
       <h1 className="animate-scene-in-title font-brand text-3xl font-thin normal-case tracking-wide md:text-4xl">
         {heading}
       </h1>
       <div className="portfolio mt-6 flex min-h-0 flex-1 flex-col">
-        <div className="flex min-h-0 flex-1 flex-col gap-4 md:flex-row md:items-start md:gap-5">
-          {SCENE_2_PROJECT_COLUMNS.map((descriptions, columnIndex) => (
-            <Scene2ProjectColumn
-              key={columnIndex}
-              columnIndex={columnIndex}
-              descriptions={descriptions}
-              imageSrcs={SCENE_2_PROJECT_IMAGES[columnIndex]}
-            />
-          ))}
-        </div>
+        {isNarrow ? (
+          <div className="flex min-h-0 w-full min-w-0 flex-1 flex-col gap-3">
+            <div
+              ref={columnViewportRef}
+              className="min-h-0 w-full min-w-0 flex-1 overflow-hidden"
+              role="region"
+              aria-label="Portfolio project columns. Swipe horizontally to move between columns, or vertically on a column to change projects."
+            >
+              <div
+                className="flex h-full min-h-0 w-[300%] will-change-transform"
+                style={{
+                  transform: `translate3d(calc((-100% / 3) * ${columnPage} + ${dragX}px), 0, 0)`,
+                  transition:
+                    dragX !== 0
+                      ? "none"
+                      : "transform 0.38s cubic-bezier(0.32, 0.72, 0, 1)",
+                }}
+              >
+                {SCENE_2_PROJECT_COLUMNS.map((descriptions, columnIndex) => (
+                  <div
+                    key={columnIndex}
+                    className="box-border flex h-full min-h-0 w-1/3 max-w-[33.333%] shrink-0 grow-0 flex-col"
+                  >
+                    <Scene2ProjectColumn
+                      columnIndex={columnIndex}
+                      descriptions={descriptions}
+                      imageSrcs={SCENE_2_PROJECT_IMAGES[columnIndex]}
+                      deferAxisToSwipeColumns
+                      onColumnHorizontal={onColumnHorizontal}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div
+              className="flex shrink-0 items-center justify-center gap-2.5 pt-0.5"
+              role="tablist"
+              aria-label="Which column to show"
+            >
+              {SCENE_2_PROJECT_COLUMNS.map((_, i) => {
+                const active = columnPage === i;
+                return (
+                  <button
+                    key={i}
+                    type="button"
+                    role="tab"
+                    aria-selected={active}
+                    tabIndex={active ? 0 : -1}
+                    onClick={() => {
+                      setColumnPage(i);
+                      setDragX(0);
+                    }}
+                    className="flex h-6 w-6 items-center justify-center rounded-full transition-transform duration-300 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-black/20"
+                  >
+                    <span
+                      aria-hidden
+                      className={[
+                        "block rounded-full shadow-sm transition-all duration-300 ease-out",
+                        active
+                          ? "h-2.5 w-2.5 scale-100 bg-gradient-to-b from-pink-200/95 to-rose-200/80 shadow-[0_0_0_1px_rgba(255,255,255,0.35),0_0_12px_rgba(251,207,232,0.5)]"
+                          : "h-1.5 w-1.5 scale-100 bg-white/30 hover:scale-110 hover:bg-white/50",
+                        active && "ring-1 ring-white/25",
+                      ]
+                        .filter(Boolean)
+                        .join(" ")}
+                    />
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        ) : (
+          <div className="flex min-h-0 min-w-0 flex-1 flex-row items-start gap-3 sm:gap-4 md:gap-5">
+            {SCENE_2_PROJECT_COLUMNS.map((descriptions, columnIndex) => (
+              <Scene2ProjectColumn
+                key={columnIndex}
+                columnIndex={columnIndex}
+                descriptions={descriptions}
+                imageSrcs={SCENE_2_PROJECT_IMAGES[columnIndex]}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </>
   );

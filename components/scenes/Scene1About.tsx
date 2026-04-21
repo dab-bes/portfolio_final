@@ -44,7 +44,7 @@ const ABOUT_LOGO_LOOP_INDEX = ABOUT_LOGOS.length;
 function AboutLogoCarousel() {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const autoPauseRef = useRef(false);
-  const scrollEndFallbackTRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const scrollEndFallbackTRef = useRef<number | undefined>(undefined);
   const [active, setActive] = useState(0);
 
   const normalizeSlideIndex = useCallback((raw: number) => {

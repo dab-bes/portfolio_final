@@ -118,10 +118,10 @@ body {
   animation: scene-fall-in 0.68s cubic-bezier(0.22, 1, 0.36, 1) 0.42s forwards;
 }
 
-/* About scene: tight stagger for employer / school logos (right column). */
+/* About scene: tight stagger bottom → top for employer / school logos (right column). */
 .animate-scene-about-in-logo-1 {
   opacity: 0;
-  animation: scene-raise-in 0.58s cubic-bezier(0.22, 1, 0.36, 1) 0.26s forwards;
+  animation: scene-raise-in 0.58s cubic-bezier(0.22, 1, 0.36, 1) 0.42s forwards;
 }
 
 .animate-scene-about-in-logo-2 {
@@ -131,7 +131,7 @@ body {
 
 .animate-scene-about-in-logo-3 {
   opacity: 0;
-  animation: scene-raise-in 0.58s cubic-bezier(0.22, 1, 0.36, 1) 0.42s forwards;
+  animation: scene-raise-in 0.58s cubic-bezier(0.22, 1, 0.36, 1) 0.26s forwards;
 }
 
 /* Connect column: cascading raise-in (intro copy → fields → submit). */

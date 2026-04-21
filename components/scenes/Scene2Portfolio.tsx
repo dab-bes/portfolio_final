@@ -47,22 +47,39 @@ const SCENE_2_PROJECT_IMAGES: readonly (readonly (ProjectImageSource | undefined
     [undefined, undefined, undefined],
   ] as const;
 
+const SCENE_2_LEFT_PROJECT_COPY =
+  "Wedding Weekend Info App\ndes. 2025" as const;
+const SCENE_2_LEFT_PROJECT_URL = "https://abbes-vila.com" as const;
+
+/** Center/right: plain text only (no link). Swap left `href` when needed. */
+const SCENE_2_COLUMN_FOOTER_ITEMS = [
+  {
+    kind: "link" as const,
+    href: SCENE_2_LEFT_PROJECT_URL,
+    label: "abbes-vila.com",
+  },
+  { kind: "text" as const, label: "comingsoon.com" },
+  { kind: "text" as const, label: "comingsoon.com" },
+] as const;
+
+const SCENE_2_COMING_SOON = "coming soon" as const;
+
 /** Three columns × three projects (drag vertically — 3D wheel). */
 const SCENE_2_PROJECT_COLUMNS: readonly (readonly string[])[] = [
   [
-    "Left — featured project, hero case study, or primary work sample.",
-    "Left — second project (e.g. case study detail or role).",
-    "Left — third project (e.g. outcomes or media).",
+    SCENE_2_LEFT_PROJECT_COPY,
+    SCENE_2_LEFT_PROJECT_COPY,
+    SCENE_2_LEFT_PROJECT_COPY,
   ],
   [
-    "Center — secondary project, process notes, or metrics you want to highlight.",
-    "Center — second project (e.g. process or stack).",
-    "Center — third project (e.g. KPIs or screenshots).",
+    SCENE_2_COMING_SOON,
+    SCENE_2_COMING_SOON,
+    SCENE_2_COMING_SOON,
   ],
   [
-    "Right — gallery strip, stack of links, or a short list of experiments.",
-    "Right — second project (e.g. experiment or side build).",
-    "Right — third project (e.g. tools or prototypes).",
+    SCENE_2_COMING_SOON,
+    SCENE_2_COMING_SOON,
+    SCENE_2_COMING_SOON,
   ],
 ] as const;
 
@@ -369,6 +386,8 @@ function Scene2ProjectColumn({
   const activeIndex =
     n > 0 ? ((Math.round(rotation / step) % n) + n) % n : 0;
 
+  const footerItem = SCENE_2_COLUMN_FOOTER_ITEMS[columnIndex];
+
   return (
     <div
       className="@container relative flex min-h-0 min-w-0 flex-1 flex-col [--project-slide-h:calc(78cqw+7.5rem)] [--wheel-r:calc((var(--project-slide-h)/2)/tan(calc(180deg/var(--scene2-n))))]"
@@ -410,9 +429,27 @@ function Scene2ProjectColumn({
                   projectIndex={projectIndex}
                   src={imageSrcs?.[projectIndex]}
                 />
-                <p className="pt-4 font-nav text-sm font-light leading-relaxed text-white/90 md:text-base [overflow-wrap:anywhere]">
-                  {description}
-                </p>
+                <div className="flex min-h-0 flex-1 flex-col pt-4">
+                  <p className="min-h-0 flex-1 whitespace-pre-line font-nav text-sm font-light leading-relaxed text-white/90 md:text-base [overflow-wrap:anywhere]">
+                    {description}
+                  </p>
+                  {footerItem ? (
+                    footerItem.kind === "link" ? (
+                      <a
+                        href={footerItem.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-2 shrink-0 self-end font-nav text-xs font-light tracking-wide text-white/65 underline decoration-white/35 underline-offset-[0.2em] transition-[color,text-decoration-color] hover:text-white/90 hover:decoration-white/55"
+                      >
+                        {footerItem.label}
+                      </a>
+                    ) : (
+                      <span className="mt-2 shrink-0 self-end select-none font-nav text-xs font-light tracking-wide text-white/50 blur-[3px]">
+                        {footerItem.label}
+                      </span>
+                    )
+                  ) : null}
+                </div>
               </div>
             </div>
           ))}

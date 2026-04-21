@@ -96,7 +96,7 @@ export function CoverPage() {
         aria-label="Enter site"
         onClick={onEnter}
         disabled={!!glide}
-        className={`relative z-10 transition-opacity duration-700 ease-out ${
+        className={`relative z-10 ${
           glide ? "pointer-events-none opacity-0" : "opacity-100"
         }`}
       />

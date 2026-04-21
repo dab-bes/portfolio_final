@@ -68,6 +68,50 @@ body {
   }
 }
 
+/* Scene nav (mobile): soft levitation on the menu dot — wrapper animates; inner span handles hover/active. */
+@keyframes scene-nav-dot-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -5px, 0);
+  }
+}
+
+.animate-scene-nav-dot-float {
+  animation: scene-nav-dot-float 2.85s ease-in-out infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-scene-nav-dot-float {
+    animation: none;
+  }
+}
+
+/* Scene nav (mobile): gentle breathe on the dot — layered with float on the wrapper. */
+@keyframes scene-nav-dot-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.14);
+  }
+}
+
+.animate-scene-nav-dot-breathe {
+  animation: scene-nav-dot-breathe 2.5s ease-in-out infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-scene-nav-dot-breathe {
+    animation: none;
+  }
+}
+
 /* Scene content: shared raise-in (About / Portfolio / Connect titles + About stagger). */
 @keyframes scene-raise-in {
   from {

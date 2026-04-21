@@ -24,9 +24,9 @@ export function SceneProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (process.env.NODE_ENV !== "development") return;
-    console.log("[portfolio cover→studio] NEW: SceneProvider mounted (studio layout)");
+    console.log("[portfolio] NEW: SceneProvider mounted (root layout)");
     return () => {
-      console.log("[portfolio studio→…] SceneProvider unmounted (leaving /studio)");
+      console.log("[portfolio] SceneProvider unmounted (root layout)");
     };
   }, []);
 

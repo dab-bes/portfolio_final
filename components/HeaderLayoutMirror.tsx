@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, type RefObject } from "react";
+import { SceneNavigation } from "@/components/SceneNavigation";
 import { headerBackdropBgClass } from "@/lib/headerBackdrop";
 
 const HEADER_BACKDROP = headerBackdropBgClass;
@@ -55,13 +56,8 @@ export function HeaderLayoutMirror({
           DANIEL ABBES
         </span>
       </div>
-      <div className="relative w-full max-w-xs opacity-0 md:hidden">
-        <div className="relative flex min-h-11 w-full items-center justify-between gap-3">
-          <span className="flex h-11 w-11 shrink-0" />
-          <span className="truncate text-right font-nav text-sm font-light lowercase tracking-wide">
-            portfolio
-          </span>
-        </div>
+      <div className="relative flex w-full max-w-xs flex-col items-center md:hidden">
+        <SceneNavigation variant="mobile-only" />
       </div>
       <div className="hidden w-full grid-cols-3 place-items-center gap-y-2 opacity-0 font-nav font-light lowercase md:grid">
         <span className="whitespace-nowrap font-nav text-sm font-light lowercase opacity-70">

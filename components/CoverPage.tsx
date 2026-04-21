@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { startTransition, useCallback, useEffect, useRef, useState } from "react";
+import { GlowOrbButton } from "@/components/GlowOrbButton";
 import { HeaderLayoutMirror } from "@/components/HeaderLayoutMirror";
 
 /** Extra upward travel (px) past the measured mirror alignment. */
@@ -90,16 +91,15 @@ export function CoverPage() {
           Art, creativity, and code — building things that matter.
         </p>
       </div>
-      <button
+      <GlowOrbButton
         type="button"
+        aria-label="Enter site"
         onClick={onEnter}
         disabled={!!glide}
-        className={`relative z-10 font-nav text-sm font-light lowercase tracking-wide text-white/90 underline decoration-white/40 underline-offset-[10px] transition-[opacity,color,text-decoration-color] duration-700 ease-out hover:text-white hover:decoration-white/70 disabled:pointer-events-none ${
-          glide ? "opacity-0" : "opacity-100"
+        className={`relative z-10 transition-opacity duration-700 ease-out ${
+          glide ? "pointer-events-none opacity-0" : "opacity-100"
         }`}
-      >
-        enter site
-      </button>
+      />
     </div>
   );
 }

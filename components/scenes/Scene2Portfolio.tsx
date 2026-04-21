@@ -152,7 +152,7 @@ function Scene2ProjectImageSlot({
         : `Column ${columnIndex + 1}, project ${projectIndex + 1}`;
     return (
       <div
-        className="relative aspect-[4/3] w-full shrink-0 overflow-hidden rounded-md border border-white/15 bg-black/40"
+        className="relative aspect-[4/3] w-full shrink-0 overflow-hidden rounded-md border border-white/15 bg-black/85"
         aria-label={alt}
       >
         <Image
@@ -423,7 +423,7 @@ function Scene2ProjectColumn({
                 transform: `rotateX(${projectIndex * step}deg) translateZ(var(--wheel-r))`,
               }}
             >
-              <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-lg border border-white/15 bg-black/25 p-4 shadow-sm backdrop-blur-sm md:p-5">
+              <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-lg border border-white/15 bg-black/90 p-4 shadow-sm backdrop-blur-sm md:p-5">
                 <Scene2ProjectImageSlot
                   columnIndex={columnIndex}
                   projectIndex={projectIndex}

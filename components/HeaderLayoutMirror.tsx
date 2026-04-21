@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, type RefObject } from "react";
-import { SceneNavigation } from "@/components/SceneNavigation";
 import { headerBackdropBgClass } from "@/lib/headerBackdrop";
 
 const HEADER_BACKDROP = headerBackdropBgClass;
@@ -56,8 +55,11 @@ export function HeaderLayoutMirror({
           DANIEL ABBES
         </span>
       </div>
-      <div className="relative flex w-full max-w-xs flex-col items-center md:hidden">
-        <SceneNavigation variant="mobile-only" />
+      {/* Match studio Header mobile scene slot (orb / links same footprint); no real nav on cover. */}
+      <div className="relative min-h-11 w-full md:hidden" aria-hidden>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="h-11 w-11 shrink-0" />
+        </div>
       </div>
       <div className="hidden w-full grid-cols-3 place-items-center gap-y-2 opacity-0 font-nav font-light lowercase md:grid">
         <span className="whitespace-nowrap font-nav text-sm font-light lowercase opacity-70">

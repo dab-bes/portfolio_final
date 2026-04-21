@@ -11,6 +11,10 @@ type SceneNavigationProps = {
   variant?: SceneNavigationVariant;
 };
 
+/** Mobile orb ↔ links crossfade — matches desktop `header-scene-nav-in` (1.4s ease-out); no page-load delay. */
+const mobileSceneMenuTransitionClass =
+  "duration-[1.4s] ease-out motion-reduce:transition-none";
+
 function sceneNavLinkClass(selected: boolean) {
   return `relative whitespace-nowrap pb-1 transition-[transform,opacity,text-shadow] duration-500 ease-out after:pointer-events-none after:absolute after:bottom-0 after:left-1/2 after:h-[0.5px] after:w-full after:-translate-x-1/2 after:origin-center after:bg-white/50 after:transition-transform after:duration-500 after:ease-out motion-reduce:scale-100 motion-reduce:text-shadow-none motion-reduce:transition-opacity motion-reduce:after:transition-none ${
     selected
@@ -47,31 +51,33 @@ export function SceneNavigation({ variant = "full" }: SceneNavigationProps) {
     <>
       <div
         ref={menuWrapRef}
-        className="animate-header-scene-nav-in pointer-events-auto relative flex w-full flex-col items-center gap-4 md:hidden"
+        className="animate-header-scene-nav-in pointer-events-auto relative min-h-11 w-full md:hidden"
       >
-        <div className="relative flex min-h-11 w-full max-w-xs items-center justify-center gap-3">
+        <div
+          className={`absolute inset-0 flex items-center justify-center transition-opacity ${mobileSceneMenuTransitionClass} ${
+            sceneRowOpen ? "pointer-events-none opacity-0" : "opacity-100"
+          }`}
+        >
           <GlowOrbButton
             aria-expanded={sceneRowOpen}
             aria-controls="mobile-scene-links"
             aria-label="Choose scene"
+            tabIndex={sceneRowOpen ? -1 : undefined}
             onClick={() => setSceneRowOpen((o) => !o)}
           />
-          <span
-            className={`min-w-0 max-w-[12rem] truncate text-center font-nav text-sm font-light lowercase tracking-wide ${
-              selectedScene == null ? "text-white/40" : ""
-            }`}
-          >
-            {selectedScene != null ? SCENE_LABELS[selectedScene] : "—"}
-          </span>
         </div>
 
-        {sceneRowOpen ? (
-          <div
-            id="mobile-scene-links"
-            role="group"
-            aria-label="Scenes"
-            className="grid w-full grid-cols-3 place-items-center gap-y-2 font-nav font-light lowercase"
-          >
+        <div
+          id="mobile-scene-links"
+          role="group"
+          aria-label="Scenes"
+          aria-hidden={!sceneRowOpen}
+          inert={!sceneRowOpen}
+          className={`absolute inset-0 flex items-center justify-center transition-opacity ${mobileSceneMenuTransitionClass} ${
+            sceneRowOpen ? "opacity-100" : "pointer-events-none opacity-0"
+          }`}
+        >
+          <div className="grid w-max max-w-[min(100vw-2rem,26rem)] grid-cols-3 place-items-center gap-x-5 px-3 font-nav text-sm font-light lowercase sm:gap-x-6">
             {SCENE_IDS.map((n) => (
               <button
                 key={n}
@@ -83,7 +89,7 @@ export function SceneNavigation({ variant = "full" }: SceneNavigationProps) {
               </button>
             ))}
           </div>
-        ) : null}
+        </div>
       </div>
 
       {variant === "full" ? (

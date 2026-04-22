@@ -55,22 +55,11 @@ export function HeaderLayoutMirror({
           DANIEL ABBES
         </span>
       </div>
-      {/* Match studio Header mobile scene slot (orb / links same footprint); no real nav on cover. */}
-      <div className="relative min-h-11 w-full md:hidden" aria-hidden>
+      {/* Match studio Header scene slot (orb / expanded links share this min height); no real nav on cover. */}
+      <div className="relative min-h-11 w-full" aria-hidden>
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="h-11 w-11 shrink-0" />
         </div>
-      </div>
-      <div className="hidden w-full grid-cols-3 place-items-center gap-y-2 opacity-0 font-nav font-light lowercase md:grid">
-        <span className="whitespace-nowrap font-nav text-sm font-light lowercase opacity-70">
-          about me
-        </span>
-        <span className="whitespace-nowrap font-nav text-sm font-light lowercase opacity-70">
-          portfolio
-        </span>
-        <span className="whitespace-nowrap font-nav text-sm font-light lowercase opacity-70">
-          connect
-        </span>
       </div>
     </header>
   );

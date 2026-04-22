@@ -94,6 +94,17 @@ function magnetTowardFace(r: number, step: number): number {
   return r + err * pull;
 }
 
+/** Same factor as `WheelEvent.deltaY` — pointer drag applies this per pixel delta so it matches trackpad/wheel steps. */
+const SCENE2_WHEEL_DELTA_TO_ROTATION = 0.2;
+
+function applyWheelLikeRotationDelta(
+  r: number,
+  deltaY: number,
+  step: number,
+): number {
+  return magnetTowardFace(r - deltaY * SCENE2_WHEEL_DELTA_TO_ROTATION, step);
+}
+
 /** Same pull as `magnetTowardFace`, but toward a fixed angle (e.g. nearest full turn for face 0). */
 function magnetTowardTarget(r: number, target: number): number {
   const err = target - r;
@@ -204,7 +215,7 @@ function Scene2ProjectColumn({
   const n = descriptions.length;
   const step = 360 / n;
   const [rotation, setRotation] = useState(0);
-  const dragRef = useRef({ y: 0, rotation: 0 });
+  const lastPointerYRef = useRef(0);
   const draggingRef = useRef(false);
   const axisRef = useRef<"u" | "h" | "v">("u");
   const startRef = useRef({ x: 0, y: 0, rotation: 0 });
@@ -281,7 +292,7 @@ function Scene2ProjectColumn({
         e.currentTarget.setPointerCapture(e.pointerId);
         draggingRef.current = true;
         axisRef.current = "v";
-        dragRef.current = { y: e.clientY, rotation };
+        lastPointerYRef.current = e.clientY;
         return;
       }
       axisRef.current = "u";
@@ -305,7 +316,7 @@ function Scene2ProjectColumn({
           axisRef.current = "v";
           e.currentTarget.setPointerCapture(e.pointerId);
           draggingRef.current = true;
-          dragRef.current = { y: e.clientY, rotation: startRef.current.rotation };
+          lastPointerYRef.current = e.clientY;
         } else if (axisRef.current === "h") {
           onColumnHorizontal?.({
             phase: "move",
@@ -317,9 +328,10 @@ function Scene2ProjectColumn({
         if (!draggingRef.current) return;
       }
       if (axisRef.current !== "v" || !draggingRef.current) return;
-      const dy = e.clientY - dragRef.current.y;
-      const raw = dragRef.current.rotation - dy * 0.28;
-      setRotation(magnetTowardFace(raw, step));
+      const deltaY = e.clientY - lastPointerYRef.current;
+      lastPointerYRef.current = e.clientY;
+      if (deltaY === 0) return;
+      setRotation((r) => applyWheelLikeRotationDelta(r, deltaY, step));
     },
     [deferAxisToSwipeColumns, onColumnHorizontal, step],
   );
@@ -330,7 +342,7 @@ function Scene2ProjectColumn({
     const onWheel = (e: WheelEvent) => {
       cancelIntroSpin();
       e.preventDefault();
-      setRotation((r) => magnetTowardFace(r - e.deltaY * 0.2, step));
+      setRotation((r) => applyWheelLikeRotationDelta(r, e.deltaY, step));
     };
     el.addEventListener("wheel", onWheel, { passive: false });
     return () => {

@@ -111,7 +111,7 @@ function applyWheelLikeRotationDelta(
   deltaY: number,
   step: number,
 ): number {
-  return magnetTowardFace(r - deltaY * SCENE2_WHEEL_DELTA_TO_ROTATION, step);
+  return magnetTowardFace(r + deltaY * SCENE2_WHEEL_DELTA_TO_ROTATION, step);
 }
 
 /** Same pull as `magnetTowardFace`, but toward a fixed angle (e.g. nearest full turn for face 0). */
@@ -269,7 +269,7 @@ function Scene2ProjectColumn({
     lastPointerMoveTRef.current = 0;
     if (Math.abs(vPx) < SCENE2_FLICK_MIN_PX_PER_SEC) return;
 
-    let omega = -vPx * SCENE2_WHEEL_DELTA_TO_ROTATION;
+    let omega = vPx * SCENE2_WHEEL_DELTA_TO_ROTATION;
     if (
       lastPointerTypeRef.current === "touch" ||
       lastPointerTypeRef.current === "pen"
@@ -416,9 +416,8 @@ function Scene2ProjectColumn({
         if (!draggingRef.current) return;
       }
       if (axisRef.current !== "v" || !draggingRef.current) return;
-      let deltaY = e.clientY - lastPointerYRef.current;
+      const deltaY = e.clientY - lastPointerYRef.current;
       lastPointerYRef.current = e.clientY;
-      if (deferAxisToSwipeColumns) deltaY = -deltaY;
       if (deltaY === 0) return;
       const now = performance.now();
       const prevT = lastPointerMoveTRef.current;
@@ -442,14 +441,13 @@ function Scene2ProjectColumn({
     const onWheel = (e: WheelEvent) => {
       cancelIntroSpin();
       e.preventDefault();
-      const dy = deferAxisToSwipeColumns ? -e.deltaY : e.deltaY;
-      setRotation((r) => applyWheelLikeRotationDelta(r, dy, step));
+      setRotation((r) => applyWheelLikeRotationDelta(r, e.deltaY, step));
     };
     el.addEventListener("wheel", onWheel, { passive: false });
     return () => {
       el.removeEventListener("wheel", onWheel);
     };
-  }, [step, cancelIntroSpin, deferAxisToSwipeColumns]);
+  }, [step, cancelIntroSpin]);
 
   const onPointerUp = useCallback(
     (e: ReactPointerEvent<HTMLDivElement>) => {

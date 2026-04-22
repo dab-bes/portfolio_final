@@ -1,6 +1,6 @@
 /**
  * Bottom fade height: solid semi-black until `calc(100% - Npx)`, then fade to transparent.
- * Shared by studio Header and cover HeaderLayoutMirror (opener mirror adds extra bottom length separately).
+ * Shared by studio Header and cover HeaderLayoutMirror.
  */
 export const HEADER_BACKDROP_BOTTOM_FADE_PX = 16;
 

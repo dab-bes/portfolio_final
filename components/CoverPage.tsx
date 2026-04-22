@@ -4,10 +4,6 @@ import { useRouter } from "next/navigation";
 import { startTransition, useCallback, useEffect, useRef, useState } from "react";
 import { GlowOrbButton } from "@/components/GlowOrbButton";
 import { HeaderLayoutMirror } from "@/components/HeaderLayoutMirror";
-import { markSceneNavOpenAfterCoverEnter } from "@/lib/sceneNavFromCoverSession";
-
-/** Extra upward travel (px) past the measured mirror alignment. */
-const COVER_GLIDE_EXTRA_UP_PX = 2;
 
 export function CoverPage() {
   const router = useRouter();
@@ -25,7 +21,6 @@ export function CoverPage() {
   const goStudio = useCallback(() => {
     if (didNavigate.current) return;
     didNavigate.current = true;
-    markSceneNavOpenAfterCoverEnter();
     if (process.env.NODE_ENV === "development") {
       console.log("[portfolio cover→studio] router.push(/studio) — next paint will mount studio layout");
     }
@@ -49,9 +44,7 @@ export function CoverPage() {
     }
 
     const dy =
-      target.getBoundingClientRect().top -
-      h1.getBoundingClientRect().top -
-      COVER_GLIDE_EXTRA_UP_PX;
+      target.getBoundingClientRect().top - h1.getBoundingClientRect().top;
     setGlide({ dy });
   }, [glide, goStudio]);
 

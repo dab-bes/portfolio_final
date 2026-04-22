@@ -118,10 +118,13 @@ export function Scene3Connect({ heading }: { heading: string }) {
           </form>
         </div>
 
-        <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-          <ConnectGlobe />
-          <div className="text-container mt-auto flex w-full min-w-0 flex-row flex-wrap items-end justify-between gap-x-4 gap-y-3 pt-4 md:pt-0">
-            <ul className="m-0 flex max-w-[min(20rem,100%)] list-none flex-row flex-wrap justify-start gap-2 [text-shadow:0_1px_12px_rgba(0,0,0,0.85)]">
+        <div className="relative flex min-h-0 min-w-0 flex-1 flex-col">
+          {/* Reserve bottom band for wrapped logo rows + location block. */}
+          <div className="relative z-0 min-h-0 flex-1 pb-[11rem]">
+            <ConnectGlobe />
+          </div>
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex w-full flex-col items-stretch gap-y-3 sm:flex-row sm:items-end sm:justify-between sm:gap-x-4 sm:gap-y-0">
+            <ul className="pointer-events-auto m-0 flex w-full min-w-0 max-w-full list-none flex-row flex-wrap justify-start gap-2 sm:max-w-[min(20rem,55%)] [text-shadow:0_1px_14px_rgba(0,0,0,0.92)]">
               {SOCIAL.map(({ href, label, logoSrc, ariaLabel }, index) => (
                 <li
                   key={label}
@@ -138,8 +141,8 @@ export function Scene3Connect({ heading }: { heading: string }) {
                     aria-label={logoSrc ? ariaLabel : undefined}
                     className={
                       logoSrc
-                        ? "inline-flex size-11 items-center justify-center rounded-lg text-white/90 transition-colors hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/40 active:bg-white/15"
-                        : "inline-flex items-center rounded-lg border border-white/20 bg-white/5 px-4 py-2 font-nav text-sm font-light lowercase tracking-wide text-white/90 transition-colors hover:bg-white/10 active:bg-white/15"
+                        ? "inline-flex size-11 shrink-0 items-center justify-center rounded-lg border border-white/30 bg-black/70 text-white shadow-[0_2px_12px_rgba(0,0,0,0.45)] backdrop-blur-sm transition-colors hover:border-white/45 hover:bg-black/85 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/50 active:bg-black/90"
+                        : "inline-flex shrink-0 items-center rounded-lg border border-white/25 bg-black/60 px-4 py-2 font-nav text-sm font-light lowercase tracking-wide text-white shadow-[0_2px_12px_rgba(0,0,0,0.45)] backdrop-blur-sm transition-colors hover:border-white/40 hover:bg-black/75 active:bg-black/85"
                     }
                   >
                     {logoSrc ? (
@@ -148,7 +151,7 @@ export function Scene3Connect({ heading }: { heading: string }) {
                         alt=""
                         width={28}
                         height={28}
-                        className="size-7 shrink-0 opacity-90"
+                        className="size-7 shrink-0 opacity-100"
                       />
                     ) : (
                       label
@@ -157,14 +160,14 @@ export function Scene3Connect({ heading }: { heading: string }) {
                 </li>
               ))}
             </ul>
-            <div className="max-w-[min(16rem,100%)] shrink-0 text-right [text-shadow:0_1px_12px_rgba(0,0,0,0.85)]">
-              <p className="animate-connect-footer-in-4 font-nav text-sm font-light text-white/90 md:text-base">
+            <div className="pointer-events-auto w-max max-w-full shrink-0 self-end text-right sm:self-end [text-shadow:0_1px_14px_rgba(0,0,0,0.92)]">
+              <p className="animate-connect-footer-in-4 font-nav text-sm font-light text-white md:text-base">
                 brooklyn, new york
               </p>
-              <p className="animate-connect-footer-in-5 mt-1 font-nav text-sm font-light text-white/70 md:text-base">
+              <p className="animate-connect-footer-in-5 mt-1 font-nav text-sm font-light text-white md:text-base">
                 <a
                   href="mailto:cdabbes@proton.me"
-                  className="text-white/90 underline decoration-white/30 underline-offset-2 transition-colors hover:decoration-white/60"
+                  className="break-all text-white underline decoration-white/55 underline-offset-[3px] transition-colors hover:decoration-white sm:break-normal"
                 >
                   cdabbes@proton.me
                 </a>

@@ -25,19 +25,22 @@ function CoverTextBackdrop({
   showBackground?: boolean;
 }) {
   return (
-    <div
-      className={`relative isolate overflow-hidden rounded-2xl px-5 py-4 transition-shadow duration-700 ease-out motion-reduce:transition-none md:px-6 md:py-5 ${
-        showBackground
-          ? "shadow-[0_0_0_1px_rgba(0,0,0,0.5),0_28px_56px_-8px_rgba(0,0,0,0.7),0_0_72px_16px_rgba(0,0,0,0.55),0_0_120px_32px_rgba(0,0,0,0.4)]"
-          : "shadow-none"
-      } ${className}`}
-    >
+    <div className={`relative isolate rounded-2xl px-5 py-4 md:px-6 md:py-5 ${className}`}>
+      {/* Own layer + no overflow clip so the halo can extend; opacity fades with the vignette. */}
       <div
-        className={`absolute inset-0 ${headerBackdropBgClass} transition-opacity duration-700 ease-out motion-reduce:transition-none ${
+        className={`pointer-events-none absolute inset-0 rounded-2xl shadow-[0_0_0_1px_rgba(0,0,0,0.5),0_28px_56px_-8px_rgba(0,0,0,0.7),0_0_72px_16px_rgba(0,0,0,0.55),0_0_120px_32px_rgba(0,0,0,0.4)] transition-opacity duration-700 ease-out motion-reduce:transition-none ${
           showBackground ? "opacity-100" : "opacity-0"
         }`}
         aria-hidden
       />
+      <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl">
+        <div
+          className={`absolute inset-0 ${headerBackdropBgClass} transition-opacity duration-700 ease-out motion-reduce:transition-none ${
+            showBackground ? "opacity-100" : "opacity-0"
+          }`}
+          aria-hidden
+        />
+      </div>
       <div className="relative">{children}</div>
     </div>
   );
@@ -124,7 +127,7 @@ export function CoverPage() {
             </div>
           </CoverTextBackdrop>
         </div>
-        <CoverTextBackdrop className="max-w-lg">
+        <CoverTextBackdrop className="max-w-lg" showBackground={glide === null}>
           <p
             className={`font-nav text-sm font-light leading-relaxed text-white/75 transition-opacity duration-700 ease-out md:text-base ${
               glide ? "opacity-0" : "opacity-100"

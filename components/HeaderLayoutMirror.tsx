@@ -57,6 +57,18 @@ export function HeaderLayoutMirror({
           <div className="h-11 w-11 shrink-0" />
         </div>
       </div>
+      <div
+        className={`pointer-events-none absolute bottom-5 left-1/2 z-[1] h-[0.5px] w-[min(12rem,32vw)] origin-center -translate-x-1/2 bg-[linear-gradient(to_right,transparent_0%,rgb(255_255_255/0.35)_14%,rgb(255_255_255/0.35)_86%,transparent_100%)] transition-transform duration-700 ease-out motion-reduce:transition-none ${
+          coverGlideActive ? "scale-x-100" : "scale-x-0"
+        }`}
+        aria-hidden
+      />
+      <div
+        className={`pointer-events-none absolute bottom-[10px] left-10 right-10 z-[1] h-px origin-center bg-[linear-gradient(to_right,transparent_0%,rgb(255_255_255/0.45)_10%,rgb(255_255_255/0.45)_90%,transparent_100%)] transition-transform duration-700 ease-out motion-reduce:transition-none ${
+          coverGlideActive ? "scale-x-100" : "scale-x-0"
+        }`}
+        aria-hidden
+      />
     </header>
   );
 }

@@ -1,10 +1,47 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { startTransition, useCallback, useEffect, useRef, useState } from "react";
+import {
+  startTransition,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import { GlowOrbButton } from "@/components/GlowOrbButton";
 import { HeaderLayoutMirror } from "@/components/HeaderLayoutMirror";
 import { markSceneNavOpenAfterCoverEnter } from "@/lib/sceneNavFromCoverSession";
+import { headerBackdropBgClass } from "@/lib/headerBackdrop";
+
+function CoverTextBackdrop({
+  children,
+  className = "",
+  showBackground = true,
+}: {
+  children: ReactNode;
+  className?: string;
+  /** When false, the tinted layer (and drop shadow) fade out over the glide duration. */
+  showBackground?: boolean;
+}) {
+  return (
+    <div
+      className={`relative isolate overflow-hidden rounded-2xl px-5 py-4 transition-shadow duration-700 ease-out motion-reduce:transition-none md:px-6 md:py-5 ${
+        showBackground
+          ? "shadow-[0_0_0_1px_rgba(0,0,0,0.5),0_28px_56px_-8px_rgba(0,0,0,0.7),0_0_72px_16px_rgba(0,0,0,0.55),0_0_120px_32px_rgba(0,0,0,0.4)]"
+          : "shadow-none"
+      } ${className}`}
+    >
+      <div
+        className={`absolute inset-0 ${headerBackdropBgClass} transition-opacity duration-700 ease-out motion-reduce:transition-none ${
+          showBackground ? "opacity-100" : "opacity-0"
+        }`}
+        aria-hidden
+      />
+      <div className="relative">{children}</div>
+    </div>
+  );
+}
 
 export function CoverPage() {
   const router = useRouter();
@@ -62,31 +99,40 @@ export function CoverPage() {
     <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-10 px-4 py-16 text-white">
       <HeaderLayoutMirror titleMeasureRef={mirrorTitleRef} coverGlideActive={glide !== null} />
 
-      <div className="relative z-10 flex w-full max-w-2xl flex-col items-center gap-4 text-center">
+      <div className="relative z-10 flex w-full max-w-2xl flex-col items-center gap-4 text-center md:max-w-3xl lg:max-w-4xl">
         <div
-          className="flex w-full flex-col items-center gap-4 text-center transition-transform duration-700 ease-out will-change-transform"
+          className="w-full transition-transform duration-700 ease-out will-change-transform"
           style={{
             transform: glide ? `translateY(${glide.dy}px)` : "translateY(0)",
           }}
           onTransitionEnd={onGlideTransitionEnd}
         >
-          <p className="font-nav text-xs font-light uppercase tracking-[0.35em] text-white/55">
-            web developer
-          </p>
-          <h1
-            ref={h1Ref}
-            className="whitespace-nowrap text-center font-brand text-5xl font-thin uppercase tracking-wide md:text-7xl lg:text-8xl"
+          <CoverTextBackdrop
+            className="w-full md:!pt-3 md:!pb-7 lg:!pt-3.5 lg:!pb-8"
+            showBackground={glide === null}
           >
-            DANIEL ABBES
-          </h1>
+            <div className="flex flex-col items-center gap-4 text-center">
+              <p className="font-nav text-xs font-light uppercase tracking-[0.35em] text-white/55">
+                web developer
+              </p>
+              <h1
+                ref={h1Ref}
+                className="whitespace-nowrap text-center font-brand text-5xl font-thin uppercase tracking-wide md:text-7xl lg:text-8xl"
+              >
+                DANIEL ABBES
+              </h1>
+            </div>
+          </CoverTextBackdrop>
         </div>
-        <p
-          className={`max-w-lg font-nav text-sm font-light leading-relaxed text-white/75 transition-opacity duration-700 ease-out md:text-base ${
-            glide ? "opacity-0" : "opacity-100"
-          }`}
-        >
-          Art, creativity, and code — building things that matter.
-        </p>
+        <CoverTextBackdrop className="max-w-lg">
+          <p
+            className={`font-nav text-sm font-light leading-relaxed text-white/75 transition-opacity duration-700 ease-out md:text-base ${
+              glide ? "opacity-0" : "opacity-100"
+            }`}
+          >
+            Art, creativity, and code — building things that matter.
+          </p>
+        </CoverTextBackdrop>
       </div>
       <GlowOrbButton
         type="button"

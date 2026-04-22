@@ -47,68 +47,51 @@ export function SceneNavigation({ variant = "full" }: SceneNavigationProps) {
   };
 
   return (
-    <>
+    <div
+      ref={menuWrapRef}
+      className="animate-header-scene-nav-in pointer-events-auto relative min-h-11 w-full"
+    >
       <div
-        ref={menuWrapRef}
-        className="animate-header-scene-nav-in pointer-events-auto relative min-h-11 w-full md:hidden"
+        className={`absolute inset-0 flex items-center justify-center transition-opacity ${sceneMenuOpacityEase} ${
+          sceneRowOpen
+            ? "pointer-events-none opacity-0 duration-300"
+            : "opacity-100 duration-[1.4s]"
+        }`}
       >
-        <div
-          className={`absolute inset-0 flex items-center justify-center transition-opacity ${sceneMenuOpacityEase} ${
-            sceneRowOpen
-              ? "pointer-events-none opacity-0 duration-300"
-              : "opacity-100 duration-[1.4s]"
-          }`}
-        >
-          <GlowOrbButton
-            aria-expanded={sceneRowOpen}
-            aria-controls="scene-nav-links"
-            aria-label="Choose scene"
-            tabIndex={sceneRowOpen ? -1 : undefined}
-            onClick={() => setSceneRowOpen((o) => !o)}
-          />
-        </div>
-
-        <div
-          id="scene-nav-links"
-          role="group"
-          aria-label="Scenes"
-          aria-hidden={!sceneRowOpen}
-          inert={!sceneRowOpen}
-          className={`absolute inset-0 flex items-center justify-center transition-opacity ${sceneMenuOpacityEase} ${
-            sceneRowOpen
-              ? "opacity-100 delay-300 duration-[1.4s]"
-              : "pointer-events-none opacity-0 delay-0 duration-300"
-          }`}
-        >
-          <div className="grid w-max max-w-[min(100vw-2rem,26rem)] grid-cols-3 place-items-center gap-x-5 px-3 font-nav text-sm font-light lowercase sm:gap-x-6">
-            {SCENE_IDS.map((n) => (
-              <button
-                key={n}
-                type="button"
-                className={sceneNavLinkClass(selectedScene === n)}
-                onClick={() => goToScene(n)}
-              >
-                {SCENE_LABELS[n]}
-              </button>
-            ))}
-          </div>
-        </div>
+        <GlowOrbButton
+          aria-expanded={sceneRowOpen}
+          aria-controls="scene-nav-links"
+          aria-label="Choose scene"
+          tabIndex={sceneRowOpen ? -1 : undefined}
+          onClick={() => setSceneRowOpen((o) => !o)}
+        />
       </div>
 
-      {variant === "full" ? (
-        <div className="animate-header-scene-nav-in hidden w-full grid-cols-3 place-items-center gap-y-2 font-nav font-light lowercase md:grid">
+      <div
+        id="scene-nav-links"
+        role="group"
+        aria-label="Scenes"
+        aria-hidden={!sceneRowOpen}
+        inert={!sceneRowOpen}
+        className={`absolute inset-0 flex items-center justify-center transition-opacity ${sceneMenuOpacityEase} ${
+          sceneRowOpen
+            ? "opacity-100 delay-300 duration-[1.4s]"
+            : "pointer-events-none opacity-0 delay-0 duration-300"
+        }`}
+      >
+        <div className="grid w-max max-w-[min(100vw-2rem,36rem)] grid-cols-3 place-items-center gap-x-5 px-3 font-nav text-sm font-light lowercase sm:gap-x-6 md:gap-x-10 md:text-base lg:gap-x-12">
           {SCENE_IDS.map((n) => (
             <button
               key={n}
               type="button"
               className={sceneNavLinkClass(selectedScene === n)}
-              onClick={() => setSelectedScene(n)}
+              onClick={() => goToScene(n)}
             >
               {SCENE_LABELS[n]}
             </button>
           ))}
         </div>
-      ) : null}
-    </>
+      </div>
+    </div>
   );
 }

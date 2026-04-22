@@ -97,6 +97,15 @@ function magnetTowardFace(r: number, step: number): number {
 /** Same factor as `WheelEvent.deltaY` — pointer drag applies this per pixel delta so it matches trackpad/wheel steps. */
 const SCENE2_WHEEL_DELTA_TO_ROTATION = 0.2;
 
+/** Below this smoothed finger speed (px/s), releasing does not start inertial coast. */
+const SCENE2_FLICK_MIN_PX_PER_SEC = 260;
+/** Cap angular velocity from a flick (deg/s). */
+const SCENE2_FLICK_OMEGA_CAP = 680;
+const SCENE2_FLICK_DAMPING = 2.35;
+const SCENE2_FLICK_COAST_OMEGA = 14;
+/** Touch / pen flicks get slightly more coast than mouse (trackpad already sends wheel inertia). */
+const SCENE2_FLICK_TOUCH_OMEGA_BOOST = 1.18;
+
 function applyWheelLikeRotationDelta(
   r: number,
   deltaY: number,
@@ -215,6 +224,7 @@ function Scene2ProjectColumn({
   const n = descriptions.length;
   const step = 360 / n;
   const [rotation, setRotation] = useState(0);
+  const rotationRef = useRef(0);
   const lastPointerYRef = useRef(0);
   const draggingRef = useRef(false);
   const axisRef = useRef<"u" | "h" | "v">("u");
@@ -222,6 +232,15 @@ function Scene2ProjectColumn({
   const viewportRef = useRef<HTMLDivElement>(null);
   const introRafRef = useRef(0);
   const introCancelRef = useRef(false);
+  const flickRafRef = useRef(0);
+  const flickCancelRef = useRef(false);
+  const touchVelPxSRef = useRef(0);
+  const lastPointerMoveTRef = useRef(0);
+  const lastPointerTypeRef = useRef<string>("");
+
+  useEffect(() => {
+    rotationRef.current = rotation;
+  }, [rotation]);
 
   const cancelIntroSpin = useCallback(() => {
     introCancelRef.current = true;
@@ -229,7 +248,70 @@ function Scene2ProjectColumn({
       cancelAnimationFrame(introRafRef.current);
       introRafRef.current = 0;
     }
+    flickCancelRef.current = true;
+    if (flickRafRef.current) {
+      cancelAnimationFrame(flickRafRef.current);
+      flickRafRef.current = 0;
+    }
   }, []);
+
+  const maybeStartTouchFlick = useCallback(() => {
+    if (
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      touchVelPxSRef.current = 0;
+      lastPointerMoveTRef.current = 0;
+      return;
+    }
+    const vPx = touchVelPxSRef.current;
+    touchVelPxSRef.current = 0;
+    lastPointerMoveTRef.current = 0;
+    if (Math.abs(vPx) < SCENE2_FLICK_MIN_PX_PER_SEC) return;
+
+    let omega = -vPx * SCENE2_WHEEL_DELTA_TO_ROTATION;
+    if (
+      lastPointerTypeRef.current === "touch" ||
+      lastPointerTypeRef.current === "pen"
+    ) {
+      omega *= SCENE2_FLICK_TOUCH_OMEGA_BOOST;
+    }
+    omega = Math.max(-SCENE2_FLICK_OMEGA_CAP, Math.min(SCENE2_FLICK_OMEGA_CAP, omega));
+
+    flickCancelRef.current = false;
+    let r = rotationRef.current;
+    let w = omega;
+    let last = performance.now();
+
+    const tick = (now: number) => {
+      if (flickCancelRef.current) return;
+      const dt = Math.min(1 / 24, (now - last) / 1000);
+      last = now;
+
+      if (Math.abs(w) > SCENE2_FLICK_COAST_OMEGA) {
+        r += w * dt;
+        w *= Math.exp(-SCENE2_FLICK_DAMPING * dt);
+      } else {
+        w *= Math.exp(-SCENE2_FLICK_DAMPING * 1.28 * dt);
+        r = magnetTowardFace(r + w * dt, step);
+        if (Math.abs(w) < 0.45) w = 0;
+      }
+
+      rotationRef.current = r;
+      setRotation(r);
+
+      const pull = magnetTowardFace(r, step);
+      if (Math.abs(w) < 1.2 && Math.abs(r - pull) < 0.06) {
+        rotationRef.current = pull;
+        setRotation(pull);
+        flickRafRef.current = 0;
+        return;
+      }
+      flickRafRef.current = requestAnimationFrame(tick);
+    };
+
+    flickRafRef.current = requestAnimationFrame(tick);
+  }, [step]);
 
   useEffect(() => {
     introCancelRef.current = false;
@@ -282,12 +364,18 @@ function Scene2ProjectColumn({
       introCancelRef.current = true;
       cancelAnimationFrame(introRafRef.current);
       introRafRef.current = 0;
+      flickCancelRef.current = true;
+      cancelAnimationFrame(flickRafRef.current);
+      flickRafRef.current = 0;
     };
   }, [columnIndex, step]);
 
   const onPointerDown = useCallback(
     (e: ReactPointerEvent<HTMLDivElement>) => {
       cancelIntroSpin();
+      lastPointerTypeRef.current = e.pointerType;
+      touchVelPxSRef.current = 0;
+      lastPointerMoveTRef.current = 0;
       if (!deferAxisToSwipeColumns) {
         e.currentTarget.setPointerCapture(e.pointerId);
         draggingRef.current = true;
@@ -331,6 +419,17 @@ function Scene2ProjectColumn({
       const deltaY = e.clientY - lastPointerYRef.current;
       lastPointerYRef.current = e.clientY;
       if (deltaY === 0) return;
+      const now = performance.now();
+      const prevT = lastPointerMoveTRef.current;
+      if (prevT > 0) {
+        const dt = (now - prevT) / 1000;
+        if (dt > 0 && dt < 0.085) {
+          const inst = deltaY / dt;
+          touchVelPxSRef.current =
+            touchVelPxSRef.current * 0.62 + inst * 0.38;
+        }
+      }
+      lastPointerMoveTRef.current = now;
       setRotation((r) => applyWheelLikeRotationDelta(r, deltaY, step));
     },
     [deferAxisToSwipeColumns, onColumnHorizontal, step],
@@ -353,6 +452,7 @@ function Scene2ProjectColumn({
   const onPointerUp = useCallback(
     (e: ReactPointerEvent<HTMLDivElement>) => {
       if (deferAxisToSwipeColumns) {
+        const hadVertical = axisRef.current === "v" && draggingRef.current;
         if (axisRef.current === "h") {
           onColumnHorizontal?.({
             phase: "end",
@@ -364,19 +464,23 @@ function Scene2ProjectColumn({
         }
         axisRef.current = "u";
         draggingRef.current = false;
+        if (hadVertical) maybeStartTouchFlick();
         return;
       }
+      const hadVertical = draggingRef.current && axisRef.current === "v";
       if (e.currentTarget.hasPointerCapture(e.pointerId)) {
         e.currentTarget.releasePointerCapture(e.pointerId);
       }
       draggingRef.current = false;
+      if (hadVertical) maybeStartTouchFlick();
     },
-    [deferAxisToSwipeColumns, onColumnHorizontal],
+    [deferAxisToSwipeColumns, onColumnHorizontal, maybeStartTouchFlick],
   );
 
   const onPointerCancel = useCallback(
     (e: ReactPointerEvent<HTMLDivElement>) => {
       if (deferAxisToSwipeColumns) {
+        const hadVertical = axisRef.current === "v" && draggingRef.current;
         if (axisRef.current === "h") {
           onColumnHorizontal?.({ phase: "cancel", deltaX: 0 });
         }
@@ -385,14 +489,17 @@ function Scene2ProjectColumn({
         }
         axisRef.current = "u";
         draggingRef.current = false;
+        if (hadVertical) maybeStartTouchFlick();
         return;
       }
+      const hadVertical = draggingRef.current && axisRef.current === "v";
       if (e.currentTarget.hasPointerCapture(e.pointerId)) {
         e.currentTarget.releasePointerCapture(e.pointerId);
       }
       draggingRef.current = false;
+      if (hadVertical) maybeStartTouchFlick();
     },
-    [deferAxisToSwipeColumns, onColumnHorizontal],
+    [deferAxisToSwipeColumns, onColumnHorizontal, maybeStartTouchFlick],
   );
 
   const activeIndex =
@@ -415,8 +522,12 @@ function Scene2ProjectColumn({
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerCancel}
         onLostPointerCapture={() => {
+          const hadVertical = deferAxisToSwipeColumns
+            ? axisRef.current === "v" && draggingRef.current
+            : draggingRef.current && axisRef.current === "v";
           draggingRef.current = false;
           if (deferAxisToSwipeColumns) axisRef.current = "u";
+          if (hadVertical) maybeStartTouchFlick();
         }}
       >
         <div

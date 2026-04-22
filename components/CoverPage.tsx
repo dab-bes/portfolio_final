@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { startTransition, useCallback, useEffect, useRef, useState } from "react";
 import { GlowOrbButton } from "@/components/GlowOrbButton";
 import { HeaderLayoutMirror } from "@/components/HeaderLayoutMirror";
+import { markSceneNavOpenAfterCoverEnter } from "@/lib/sceneNavFromCoverSession";
 
 export function CoverPage() {
   const router = useRouter();
@@ -21,6 +22,7 @@ export function CoverPage() {
   const goStudio = useCallback(() => {
     if (didNavigate.current) return;
     didNavigate.current = true;
+    markSceneNavOpenAfterCoverEnter();
     if (process.env.NODE_ENV === "development") {
       console.log("[portfolio cover→studio] router.push(/studio) — next paint will mount studio layout");
     }

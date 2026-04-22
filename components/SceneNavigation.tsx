@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { GlowOrbButton } from "@/components/GlowOrbButton";
 import { SCENE_IDS, SCENE_LABELS, useScene, type SceneId } from "@/components/SceneContext";
+import { consumeSceneNavOpenAfterCoverEnter } from "@/lib/sceneNavFromCoverSession";
 
 export type SceneNavigationVariant = "full" | "mobile-only";
 
@@ -27,6 +28,10 @@ export function SceneNavigation({ variant = "full" }: SceneNavigationProps) {
   const { scene: selectedScene, setScene: setSelectedScene } = useScene();
   const [sceneRowOpen, setSceneRowOpen] = useState(false);
   const menuWrapRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (consumeSceneNavOpenAfterCoverEnter()) setSceneRowOpen(true);
+  }, []);
 
   useEffect(() => {
     if (!sceneRowOpen) return;

@@ -416,8 +416,9 @@ function Scene2ProjectColumn({
         if (!draggingRef.current) return;
       }
       if (axisRef.current !== "v" || !draggingRef.current) return;
-      const deltaY = e.clientY - lastPointerYRef.current;
+      let deltaY = e.clientY - lastPointerYRef.current;
       lastPointerYRef.current = e.clientY;
+      if (deferAxisToSwipeColumns) deltaY = -deltaY;
       if (deltaY === 0) return;
       const now = performance.now();
       const prevT = lastPointerMoveTRef.current;
@@ -441,13 +442,14 @@ function Scene2ProjectColumn({
     const onWheel = (e: WheelEvent) => {
       cancelIntroSpin();
       e.preventDefault();
-      setRotation((r) => applyWheelLikeRotationDelta(r, e.deltaY, step));
+      const dy = deferAxisToSwipeColumns ? -e.deltaY : e.deltaY;
+      setRotation((r) => applyWheelLikeRotationDelta(r, dy, step));
     };
     el.addEventListener("wheel", onWheel, { passive: false });
     return () => {
       el.removeEventListener("wheel", onWheel);
     };
-  }, [step, cancelIntroSpin]);
+  }, [step, cancelIntroSpin, deferAxisToSwipeColumns]);
 
   const onPointerUp = useCallback(
     (e: ReactPointerEvent<HTMLDivElement>) => {

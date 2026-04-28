@@ -161,10 +161,10 @@ export function Scene3Connect({ heading }: { heading: string }) {
               ))}
             </ul>
             <div className="pointer-events-auto min-w-0 w-max max-w-full shrink-0 text-right [text-shadow:0_1px_14px_rgba(0,0,0,0.92)]">
-              <p className="animate-connect-footer-in-4 font-nav text-sm font-light text-white md:text-base">
+              <p className="animate-connect-footer-in-4 font-nav text-[11px] font-light text-white md:text-base">
                 brooklyn, new york
               </p>
-              <p className="animate-connect-footer-in-5 mt-1 font-nav text-sm font-light text-white md:text-base">
+              <p className="animate-connect-footer-in-5 mt-1 font-nav text-[11px] font-light text-white md:text-base">
                 <a
                   href="mailto:cdabbes@proton.me"
                   className="break-all text-white underline decoration-white/55 underline-offset-[3px] transition-colors hover:decoration-white sm:break-normal"

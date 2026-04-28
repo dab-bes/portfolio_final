@@ -12,35 +12,16 @@ import {
 import { GlowOrbButton } from "@/components/GlowOrbButton";
 import { HeaderLayoutMirror } from "@/components/HeaderLayoutMirror";
 import { markSceneNavOpenAfterCoverEnter } from "@/lib/sceneNavFromCoverSession";
-import { headerBackdropBgClass } from "@/lib/headerBackdrop";
 
 function CoverTextBackdrop({
   children,
   className = "",
-  showBackground = true,
 }: {
   children: ReactNode;
   className?: string;
-  /** When false, the tinted layer (and drop shadow) fade out over the glide duration. */
-  showBackground?: boolean;
 }) {
   return (
-    <div className={`relative isolate rounded-2xl px-5 py-4 md:px-6 md:py-5 ${className}`}>
-      {/* Own layer + no overflow clip so the halo can extend; opacity fades with the vignette. */}
-      <div
-        className={`pointer-events-none absolute inset-0 rounded-2xl shadow-[0_0_0_1px_rgba(0,0,0,0.5),0_28px_56px_-8px_rgba(0,0,0,0.7),0_0_72px_16px_rgba(0,0,0,0.55),0_0_120px_32px_rgba(0,0,0,0.4)] transition-opacity duration-700 ease-out motion-reduce:transition-none ${
-          showBackground ? "opacity-100" : "opacity-0"
-        }`}
-        aria-hidden
-      />
-      <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl">
-        <div
-          className={`absolute inset-0 ${headerBackdropBgClass} transition-opacity duration-700 ease-out motion-reduce:transition-none ${
-            showBackground ? "opacity-100" : "opacity-0"
-          }`}
-          aria-hidden
-        />
-      </div>
+    <div className={`relative rounded-2xl px-5 py-4 md:px-6 md:py-5 ${className}`}>
       <div className="relative">{children}</div>
     </div>
   );
@@ -110,10 +91,7 @@ export function CoverPage() {
           }}
           onTransitionEnd={onGlideTransitionEnd}
         >
-          <CoverTextBackdrop
-            className="w-full md:!pt-3 md:!pb-7 lg:!pt-3.5 lg:!pb-8"
-            showBackground={glide === null}
-          >
+          <CoverTextBackdrop className="w-full md:!pt-3 md:!pb-7 lg:!pt-3.5 lg:!pb-8">
             <div className="flex flex-col items-center gap-4 text-center">
               <p className="font-nav text-xs font-light uppercase tracking-[0.35em] text-white/55">
                 web developer
@@ -127,7 +105,7 @@ export function CoverPage() {
             </div>
           </CoverTextBackdrop>
         </div>
-        <CoverTextBackdrop className="max-w-lg" showBackground={glide === null}>
+        <CoverTextBackdrop className="max-w-lg">
           <p
             className={`font-nav text-sm font-light leading-relaxed text-white/75 transition-opacity duration-700 ease-out md:text-base ${
               glide ? "opacity-0" : "opacity-100"

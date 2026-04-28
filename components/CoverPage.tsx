@@ -30,6 +30,8 @@ function CoverTextBackdrop({
 export function CoverPage() {
   const router = useRouter();
   const [glide, setGlide] = useState<{ dy: number } | null>(null);
+  const [stripVisible, setStripVisible] = useState(true);
+
   const didNavigate = useRef(false);
   const h1Ref = useRef<HTMLHeadingElement>(null);
   const mirrorTitleRef = useRef<HTMLSpanElement>(null);
@@ -54,6 +56,7 @@ export function CoverPage() {
 
   const onEnter = useCallback(() => {
     if (glide) return;
+    setStripVisible(false);
     if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       goStudio();
       return;
@@ -80,7 +83,13 @@ export function CoverPage() {
   );
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-10 px-4 py-16 text-white">
+    <div className="relative flex min-h-0 flex-1 flex-col items-center justify-center gap-10 px-4 py-16 text-white">
+      <div
+        className={`pointer-events-none absolute inset-x-0 top-[46%] z-0 h-[min(58vh,30rem)] -translate-y-1/2 bg-[linear-gradient(to_bottom,transparent_0%,rgb(0_0_0_/0.78)_22%,rgb(0_0_0_/0.78)_78%,transparent_100%)] transition-opacity duration-100 ease-out sm:h-[min(66vh,36rem)] ${
+          stripVisible ? "opacity-100" : "opacity-0"
+        }`}
+        aria-hidden
+      />
       <HeaderLayoutMirror titleMeasureRef={mirrorTitleRef} coverGlideActive={glide !== null} />
 
       <div className="relative z-10 flex w-full max-w-2xl flex-col items-center gap-4 text-center md:max-w-3xl lg:max-w-4xl">

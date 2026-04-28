@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Poppins, Ysabeau_Infant } from "next/font/google";
-import { Footer } from "@/components/Footer";
+import { ConditionalFooter } from "@/components/ConditionalFooter";
 import { SceneProvider } from "@/components/SceneContext";
 import "./globals.css";
 
@@ -45,7 +45,7 @@ export default function RootLayout({
         <SceneProvider>
           <div className="flex min-h-0 flex-1 flex-col">{children}</div>
         </SceneProvider>
-        <Footer />
+        <ConditionalFooter />
       </body>
     </html>
   );

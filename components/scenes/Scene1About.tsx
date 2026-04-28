@@ -262,7 +262,7 @@ export function Scene1About({
           {heading}
         </h1>
         <div className="relative max-md:mt-4 md:mt-6">
-          <div className="animate-scene-about-in-bio relative z-10 w-full rounded-lg border border-white/15 bg-black/25 px-4 py-3 shadow-sm backdrop-blur-sm max-md:flex max-md:h-[min(65vh,26rem)] max-md:min-h-0 max-md:flex-col max-md:overflow-hidden">
+          <div className="animate-scene-about-in-bio relative z-10 w-full rounded-lg border border-white/15 bg-black/25 px-4 py-3 shadow-sm backdrop-blur-sm max-md:flex max-md:h-[min(78vh,34rem)] max-md:min-h-0 max-md:flex-col max-md:overflow-hidden">
             <div className="hide-scrollbar min-h-0 max-md:min-h-0 max-md:flex-1 max-md:overflow-y-auto max-md:overscroll-y-contain">
               <div className="mb-5 flex items-start justify-between gap-3 border-b border-white/15 pb-3 md:block">
                 <h2 className="min-w-0 flex-1 pt-2 text-left font-brand text-lg font-light italic tracking-[0.02em] text-white md:pt-0 md:text-right md:text-xl">

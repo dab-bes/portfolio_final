@@ -43,7 +43,7 @@ export function Scene3Connect({ heading }: { heading: string }) {
       <h1 className="animate-scene-in-title font-brand text-3xl font-thin normal-case tracking-wide md:text-4xl">
         {heading}
       </h1>
-      <div className="mt-6 flex min-h-0 flex-1 flex-col gap-6 md:flex-row md:items-stretch md:gap-8">
+      <div className="mt-6 flex min-h-0 flex-1 flex-col gap-3 md:flex-row md:items-stretch md:gap-8">
         <div className="flex min-h-0 min-w-0 flex-1 flex-col rounded-lg border border-white/15 bg-black/25 p-4 shadow-sm backdrop-blur-sm md:p-5">
           <div className="mb-4">
             <p className="animate-connect-form-in-1 font-nav text-sm font-light uppercase leading-relaxed tracking-[0.2em] text-white/85">
@@ -119,12 +119,12 @@ export function Scene3Connect({ heading }: { heading: string }) {
         </div>
 
         <div className="relative flex min-h-0 min-w-0 flex-1 flex-col">
-          {/* Reserve bottom band for wrapped logo rows + location block. */}
-          <div className="relative z-0 min-h-0 flex-1 pb-[11rem]">
+          {/* Reserve bottom band for footer overlay (icons + location); tighter on mobile now that footer is one row. */}
+          <div className="relative z-0 min-h-0 flex-1 pb-24 md:pb-[11rem]">
             <ConnectGlobe />
           </div>
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex w-full flex-col items-stretch gap-y-3 sm:flex-row sm:items-end sm:justify-between sm:gap-x-4 sm:gap-y-0">
-            <ul className="pointer-events-auto m-0 flex w-full min-w-0 max-w-full list-none flex-row flex-wrap justify-start gap-2 sm:max-w-[min(20rem,55%)] [text-shadow:0_1px_14px_rgba(0,0,0,0.92)]">
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex w-full flex-row items-end justify-between gap-x-3 sm:gap-x-4">
+            <ul className="pointer-events-auto m-0 flex min-w-0 max-w-[min(20rem,55%)] list-none flex-row flex-wrap justify-start gap-2 [text-shadow:0_1px_14px_rgba(0,0,0,0.92)]">
               {SOCIAL.map(({ href, label, logoSrc, ariaLabel }, index) => (
                 <li
                   key={label}
@@ -141,7 +141,7 @@ export function Scene3Connect({ heading }: { heading: string }) {
                     aria-label={logoSrc ? ariaLabel : undefined}
                     className={
                       logoSrc
-                        ? "inline-flex size-11 shrink-0 items-center justify-center rounded-lg border border-white/30 bg-black/70 text-white shadow-[0_2px_12px_rgba(0,0,0,0.45)] backdrop-blur-sm transition-colors hover:border-white/45 hover:bg-black/85 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/50 active:bg-black/90"
+                        ? "inline-flex size-9 shrink-0 items-center justify-center rounded-lg border border-white/30 bg-black/70 text-white shadow-[0_2px_12px_rgba(0,0,0,0.45)] backdrop-blur-sm transition-colors hover:border-white/45 hover:bg-black/85 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/50 active:bg-black/90 md:size-11"
                         : "inline-flex shrink-0 items-center rounded-lg border border-white/25 bg-black/60 px-4 py-2 font-nav text-sm font-light lowercase tracking-wide text-white shadow-[0_2px_12px_rgba(0,0,0,0.45)] backdrop-blur-sm transition-colors hover:border-white/40 hover:bg-black/75 active:bg-black/85"
                     }
                   >
@@ -151,7 +151,7 @@ export function Scene3Connect({ heading }: { heading: string }) {
                         alt=""
                         width={28}
                         height={28}
-                        className="size-7 shrink-0 opacity-100"
+                        className="size-5 shrink-0 opacity-100 md:size-7"
                       />
                     ) : (
                       label
@@ -160,7 +160,7 @@ export function Scene3Connect({ heading }: { heading: string }) {
                 </li>
               ))}
             </ul>
-            <div className="pointer-events-auto w-max max-w-full shrink-0 self-end text-right sm:self-end [text-shadow:0_1px_14px_rgba(0,0,0,0.92)]">
+            <div className="pointer-events-auto min-w-0 w-max max-w-full shrink-0 text-right [text-shadow:0_1px_14px_rgba(0,0,0,0.92)]">
               <p className="animate-connect-footer-in-4 font-nav text-sm font-light text-white md:text-base">
                 brooklyn, new york
               </p>

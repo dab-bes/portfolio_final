@@ -10,6 +10,8 @@ export type SceneNavigationVariant = "full" | "mobile-only";
 
 type SceneNavigationProps = {
   variant?: SceneNavigationVariant;
+  /** When set (typically while a studio scene is open), mobile header uses a compact tray — nav fills trailing space beside the title. */
+  collapseMobileTray?: boolean;
 };
 
 /** Shared easing; orb/link durations differ so the orb clears before links fade in. */
@@ -23,7 +25,10 @@ function sceneNavLinkClass(selected: boolean) {
   }`;
 }
 
-export function SceneNavigation({ variant = "full" }: SceneNavigationProps) {
+export function SceneNavigation({
+  variant = "full",
+  collapseMobileTray = false,
+}: SceneNavigationProps) {
   const router = useRouter();
   const { scene: selectedScene, setScene: setSelectedScene } = useScene();
   const [sceneRowOpen, setSceneRowOpen] = useState(false);
@@ -54,7 +59,11 @@ export function SceneNavigation({ variant = "full" }: SceneNavigationProps) {
   return (
     <div
       ref={menuWrapRef}
-      className="animate-header-scene-nav-in pointer-events-auto relative min-h-11 w-full"
+      className={`animate-header-scene-nav-in pointer-events-auto relative min-h-11 w-full ${
+        collapseMobileTray
+          ? "max-md:flex max-md:min-h-11 max-md:flex-1 max-md:justify-end"
+          : ""
+      }`}
     >
       <div
         className={`absolute inset-0 flex items-center justify-center transition-opacity ${sceneMenuOpacityEase} ${

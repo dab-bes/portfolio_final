@@ -22,7 +22,7 @@ export function Header() {
 
   return (
     <header
-      className={`relative flex min-h-60 w-full shrink-0 flex-col items-center justify-center gap-6 ${headerBackdropBgClass} px-4 py-8 text-white`}
+      className={`relative flex min-h-60 w-full shrink-0 flex-col items-center justify-center gap-6 px-4 py-8 text-white md:min-h-60 md:justify-center md:gap-8 md:py-8 ${headerBackdropBgClass}`}
     >
       {/* Ornament: top hairline + wide stroke
       <div

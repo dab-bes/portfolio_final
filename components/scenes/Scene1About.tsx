@@ -41,6 +41,14 @@ const ABOUT_LOGO_AUTO_MS = 4000;
 const ABOUT_LOGO_TRACK = [...ABOUT_LOGOS, ABOUT_LOGOS[0]] as const;
 const ABOUT_LOGO_LOOP_INDEX = ABOUT_LOGOS.length;
 
+/** Desktop (md+): bottom fade on photo — mobile is full-bleed, no mask. */
+const PORTRAIT_IMG_BOTTOM_FADE =
+  "max-md:[mask-image:none] max-md:[-webkit-mask-image:none] md:[mask-image:linear-gradient(to_top,transparent_0%,black_48%)] md:[-webkit-mask-image:linear-gradient(to_top,transparent_0%,black_48%)]";
+
+/** Same curve on blur/black strip (hidden below md). */
+const PORTRAIT_OVERLAY_BOTTOM_FADE_MASK =
+  "[mask-image:linear-gradient(to_top,transparent_0%,black_48%)] [-webkit-mask-image:linear-gradient(to_top,transparent_0%,black_48%)]";
+
 function AboutLogoCarousel() {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const autoPauseRef = useRef(false);
@@ -230,7 +238,7 @@ function AboutLogoCarousel() {
 function Scene1Portrait({ className = "" }: { className?: string }) {
   return (
     <div
-      className={`relative aspect-square w-full shrink-0 overflow-hidden rounded-lg md:mx-0 md:w-52 md:max-w-none md:aspect-[4/5] lg:w-60${className ? ` ${className}` : ""}`}
+      className={`relative isolate aspect-square w-full shrink-0 overflow-hidden rounded-lg md:mx-0 md:w-52 md:max-w-none md:aspect-[4/5] lg:w-60${className ? ` ${className}` : ""}`}
     >
       <picture className="absolute inset-0 block">
         <source srcSet="/self.webp" type="image/webp" />
@@ -239,11 +247,17 @@ function Scene1Portrait({ className = "" }: { className?: string }) {
           alt="Profile photo"
           width={2134}
           height={1939}
-          className="h-full w-full object-cover object-center [mask-image:radial-gradient(ellipse_96%_98%_at_50%_50%,#000_55%,#000_74%,transparent_100%)] [-webkit-mask-image:radial-gradient(ellipse_96%_98%_at_50%_50%,#000_55%,#000_74%,transparent_100%)]"
+          className={`h-full w-full object-cover object-center ${PORTRAIT_IMG_BOTTOM_FADE}`}
           decoding="async"
           fetchPriority="high"
         />
       </picture>
+      <div
+        className={`pointer-events-none absolute inset-0 z-[1] max-md:hidden rounded-[inherit] ${PORTRAIT_OVERLAY_BOTTOM_FADE_MASK}`}
+        aria-hidden
+      >
+        <div className="absolute inset-x-0 bottom-0 h-[36%] rounded-b-[inherit] bg-gradient-to-t from-black/45 via-black/15 to-transparent backdrop-blur-sm" />
+      </div>
     </div>
   );
 }

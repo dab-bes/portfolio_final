@@ -41,7 +41,13 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${ysabeauInfant.variable} ${poppins.variable} h-full antialiased`}
     >
-      <body className="flex min-h-dvh min-h-full flex-col bg-[color:var(--background)] bg-[linear-gradient(to_top,var(--background)_0%,color-mix(in_srgb,var(--background)_18%,transparent)_12%,transparent_26%),url('/background.jpg')] bg-cover bg-center bg-no-repeat">
+      <body
+        className={
+          "flex min-h-dvh min-h-full flex-col bg-cover bg-center bg-no-repeat " +
+          "max-md:bg-[color:var(--background)] max-md:bg-[linear-gradient(to_top,var(--background)_0%,color-mix(in_srgb,var(--background)_18%,transparent)_12%,transparent_26%),url('/background.jpg')] " +
+          "md:bg-[color:transparent] md:bg-[url('/background.jpg')]"
+        }
+      >
         <SceneProvider>
           <div className="flex min-h-0 flex-1 flex-col">{children}</div>
         </SceneProvider>

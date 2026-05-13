@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-const RESUME_FILE = "Christian Daniel Abbes - Web Developer.pdf";
-const RESUME_HREF = `/${encodeURIComponent(RESUME_FILE)}`;
+const RESUME_FILE = "Resume_cda.pdf";
+const RESUME_HREF = `/${RESUME_FILE}`;
 const BIO_STORY_TITLE = "North Is That Way";
 
 const ABOUT_LOGOS = [

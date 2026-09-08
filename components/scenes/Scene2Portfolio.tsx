@@ -43,13 +43,23 @@ const SCENE_2_PROJECT_IMAGES: readonly (readonly (ProjectImageSource | undefined
       "/project1/schedule.png",
       LEFT_COLUMN_THIRD_CYCLING_IMAGES,
     ],
-    ["/project1/animation.mov", "/project1/Home.png", "/project1/insulation.png"],
+    ["/project1/animation.gif", "/project1/Home.png", "/project1/insulation.png"],
     ["/project1/opener.png", "/project1/time.png", "/project1/mood.png"],
   ] as const;
 
 const SCENE_2_LEFT_PROJECT_COPY =
   "Wedding Weekend Info App\ndes. 2025" as const;
 const SCENE_2_LEFT_PROJECT_URL = "https://abbes-vila.com" as const;
+
+const SCENE_2_MIDDLE_PROJECT_COPY = 
+  "Vila Structural Revamp\ndes. 2026" as const;
+const SCENE_2_MIDDLE_PROJECT_URL = "" as const;
+
+const SCENE_2_RIGHT_PROJECT_COPY =
+  "Photo Gallery Mockup\ndes. 2024" as const;
+const SCENE_2_RIGHT_PROJECT_URL = "" as const;
+
+
 
 /** Center/right: plain text only (no link). Swap left `href` when needed. */
 const SCENE_2_COLUMN_FOOTER_ITEMS = [
@@ -62,7 +72,6 @@ const SCENE_2_COLUMN_FOOTER_ITEMS = [
   { kind: "text" as const, label: "Photo Gallery Mockup" },
 ] as const;
 
-const SCENE_2_COMING_SOON = "coming soon" as const;
 
 /** Three columns × three projects (drag vertically — 3D wheel). */
 const SCENE_2_PROJECT_COLUMNS: readonly (readonly string[])[] = [

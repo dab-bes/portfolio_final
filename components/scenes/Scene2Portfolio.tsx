@@ -72,14 +72,14 @@ const SCENE_2_PROJECT_COLUMNS: readonly (readonly string[])[] = [
     SCENE_2_LEFT_PROJECT_COPY,
   ],
   [
-    SCENE_2_COMING_SOON,
-    SCENE_2_COMING_SOON,
-    SCENE_2_COMING_SOON,
+    "Vila Structural Revamp",
+    "Vila Structural Revamp",
+    "Vila Structural Revamp",
   ],
   [
-    SCENE_2_COMING_SOON,
-    SCENE_2_COMING_SOON,
-    SCENE_2_COMING_SOON,
+    "Photo Gallery Mockup",
+    "Photo Gallery Mockup",
+    "Photo Gallery Mockup",
   ],
 ] as const;
 

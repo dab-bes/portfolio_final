@@ -51,12 +51,8 @@ export function HeaderLayoutMirror({
           DANIEL ABBES
         </span>
       </div>
-      {/* Match studio Header scene nav slot (orb / links share min height); no real nav on cover. */}
-      <div className="relative min-h-11 w-full" aria-hidden>
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="h-11 w-11 shrink-0" />
-        </div>
-      </div>
+      {/* Match studio Header scene nav slot height; no real nav on cover. */}
+      <div className="relative min-h-11 w-full" aria-hidden />
       {/* Ornament: top hairline + wide stroke (same stack as Header) — disabled
       <div
         className={`pointer-events-none absolute bottom-[10px] -left-4 right-10 z-[1] h-[0.5px] origin-left bg-[linear-gradient(to_right,rgb(255_255_255/0.35)_0%,rgb(255_255_255/0.35)_82%,transparent_100%)] transition-transform duration-700 ease-out motion-reduce:transition-none ${

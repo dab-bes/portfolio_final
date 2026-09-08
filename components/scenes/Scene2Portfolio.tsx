@@ -43,8 +43,8 @@ const SCENE_2_PROJECT_IMAGES: readonly (readonly (ProjectImageSource | undefined
       "/project1/schedule.png",
       LEFT_COLUMN_THIRD_CYCLING_IMAGES,
     ],
-    [undefined, undefined, undefined],
-    [undefined, undefined, undefined],
+    ["/project1/animation.mov", "/project1/Home.png", "/project1/insulation.png"],
+    ["/project1/opener.png", "/project1/time.png", "/project1/mood.png"],
   ] as const;
 
 const SCENE_2_LEFT_PROJECT_COPY =
@@ -58,8 +58,8 @@ const SCENE_2_COLUMN_FOOTER_ITEMS = [
     href: SCENE_2_LEFT_PROJECT_URL,
     label: "abbes-vila.com",
   },
-  { kind: "text" as const, label: "comingsoon.com" },
-  { kind: "text" as const, label: "comingsoon.com" },
+  { kind: "text" as const, label: "Vila Structural Revamp" },
+  { kind: "text" as const, label: "Photo Gallery Mockup" },
 ] as const;
 
 const SCENE_2_COMING_SOON = "coming soon" as const;

@@ -41,14 +41,6 @@ const ABOUT_LOGO_AUTO_MS = 4000;
 const ABOUT_LOGO_TRACK = [...ABOUT_LOGOS, ABOUT_LOGOS[0]] as const;
 const ABOUT_LOGO_LOOP_INDEX = ABOUT_LOGOS.length;
 
-/** Desktop (md+): bottom fade on photo — mobile is full-bleed, no mask. */
-const PORTRAIT_IMG_BOTTOM_FADE =
-  "max-md:[mask-image:none] max-md:[-webkit-mask-image:none] md:[mask-image:linear-gradient(to_top,transparent_0%,black_48%)] md:[-webkit-mask-image:linear-gradient(to_top,transparent_0%,black_48%)]";
-
-/** Same curve on blur/black strip (hidden below md). */
-const PORTRAIT_OVERLAY_BOTTOM_FADE_MASK =
-  "[mask-image:linear-gradient(to_top,transparent_0%,black_48%)] [-webkit-mask-image:linear-gradient(to_top,transparent_0%,black_48%)]";
-
 function AboutLogoCarousel() {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const autoPauseRef = useRef(false);
@@ -238,7 +230,7 @@ function AboutLogoCarousel() {
 function Scene1Portrait({ className = "" }: { className?: string }) {
   return (
     <div
-      className={`relative isolate aspect-square w-full shrink-0 overflow-hidden rounded-lg md:mx-0 md:w-52 md:max-w-none md:aspect-[4/5] lg:w-60${className ? ` ${className}` : ""}`}
+      className={`relative aspect-square w-full shrink-0 overflow-hidden md:mx-0 md:w-52 md:max-w-none md:aspect-[4/5] lg:w-60${className ? ` ${className}` : ""}`}
     >
       <picture className="absolute inset-0 block">
         <source srcSet="/self.webp" type="image/webp" />
@@ -247,17 +239,11 @@ function Scene1Portrait({ className = "" }: { className?: string }) {
           alt="Profile photo"
           width={2134}
           height={1939}
-          className={`h-full w-full object-cover object-center ${PORTRAIT_IMG_BOTTOM_FADE}`}
+          className="h-full w-full object-cover object-center"
           decoding="async"
           fetchPriority="high"
         />
       </picture>
-      <div
-        className={`pointer-events-none absolute inset-0 z-[1] max-md:hidden rounded-[inherit] ${PORTRAIT_OVERLAY_BOTTOM_FADE_MASK}`}
-        aria-hidden
-      >
-        <div className="absolute inset-x-0 bottom-0 h-[36%] rounded-b-[inherit] bg-gradient-to-t from-black/45 via-black/15 to-transparent backdrop-blur-sm" />
-      </div>
     </div>
   );
 }
@@ -271,19 +257,19 @@ export function Scene1About({
 }) {
   return (
     <div className="relative flex min-h-0 w-full flex-1 flex-col gap-8 md:flex-row md:items-stretch md:gap-10">
-      <div className="flex min-w-0 flex-1 flex-col md:gap-0">
-        <h1 className="animate-scene-in-title relative z-20 mt-7 min-w-0 font-brand text-4xl font-thin normal-case tracking-wide md:mt-0">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col md:gap-0">
+        <h1 className="animate-scene-in-title relative z-20 mt-7 min-w-0 shrink-0 font-brand text-4xl font-thin normal-case tracking-wide md:mt-0">
           {heading}
         </h1>
-        <div className="relative max-md:mt-4 md:mt-6">
-          <div className="animate-scene-about-in-bio relative z-10 w-full rounded-lg border border-white/15 bg-black/25 px-4 py-3 shadow-sm backdrop-blur-sm max-md:flex max-md:h-[min(78vh,34rem)] max-md:min-h-0 max-md:flex-col max-md:overflow-hidden">
-            <div className="hide-scrollbar min-h-0 max-md:min-h-0 max-md:flex-1 max-md:overflow-y-auto max-md:overscroll-y-contain">
+        <div className="relative flex min-h-0 flex-1 flex-col max-md:mt-4 md:mt-6">
+          <div className="animate-scene-about-in-bio relative z-10 flex min-h-0 w-full flex-1 flex-col overflow-hidden rounded-lg border border-white/15 bg-black/25 px-4 py-3 shadow-sm backdrop-blur-sm">
+            <div className="hide-scrollbar min-h-0 flex-1 overflow-y-auto overscroll-y-contain">
               <div className="mb-5 flex items-start justify-between gap-3 border-b border-white/15 pb-3 md:block">
                 <h2 className="min-w-0 flex-1 pt-2 text-left font-brand text-lg font-light italic tracking-[0.02em] text-white md:pt-0 md:text-right md:text-xl">
                   {BIO_STORY_TITLE}
                 </h2>
-                <div className="animate-scene-about-in-photo relative z-20 shrink-0 overflow-hidden rounded-md md:hidden">
-                  <Scene1Portrait className="!h-28 !w-28 !max-w-none aspect-square rounded-md !outline-none min-h-0 min-w-0" />
+                <div className="animate-scene-about-in-photo relative z-20 shrink-0 overflow-hidden md:hidden">
+                  <Scene1Portrait className="!h-28 !w-28 !max-w-none aspect-square !outline-none min-h-0 min-w-0" />
                 </div>
               </div>
               {Array.isArray(body) ? (

@@ -81,15 +81,13 @@ const SCENE_2_PROJECT_COLUMNS: readonly (readonly string[])[] = [
     SCENE_2_LEFT_PROJECT_COPY,
   ],
   [
-    SCENE_2_COMING_SOON,
-    SCENE_2_COMING_SOON,
-    SCENE_2_COMING_SOON,
+    SCENE_2_MIDDLE_PROJECT_COPY,
+    SCENE_2_MIDDLE_PROJECT_COPY,
+    SCENE_2_MIDDLE_PROJECT_COPY,
   ],
   [
-    SCENE_2_COMING_SOON,
-    SCENE_2_COMING_SOON,
-    SCENE_2_COMING_SOON,
-  ],
+    SCENE_2_RIGHT_PROJECT_COPY,
+    SCENE_2_RIGHT_PROJECT_COPY,
 ] as const;
 
 /** Pull rotation toward the nearest face (step°); stronger when already close — magnetic well. */

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-const RESUME_FILE = "Resume_cda.pdf";
+const RESUME_FILE = "cdav.resume.pdf";
 const RESUME_HREF = `/${RESUME_FILE}`;
 const BIO_STORY_TITLE = "North Is That Way";
 
